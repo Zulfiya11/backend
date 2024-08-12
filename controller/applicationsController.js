@@ -5,7 +5,7 @@ const byscrypt = require('bcryptjs')
 const { secret } = require('../config/config')
 
 exports.getAllUserApplications = async(req, res) => {
-    const application = await User_applications.query().select('*')
+    const application = await User_applications.query().select('*').where('status', "pending")
     return res.json({ success: true, users: application });
 }
 

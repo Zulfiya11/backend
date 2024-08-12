@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const { secret } = require('../config/config')
 const User_applications = require('../models/user_applications')
 const Users = require('../models/users')
-// 
+
 
 
 exports.getAllUsers = async(req, res) => {

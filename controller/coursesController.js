@@ -12,3 +12,8 @@ exports.createCourse = async(req, res) => {
 
     return res.status(201).json({ success: true, msg: 'Kurs yaratildi' })
 }
+
+exports.getaAllCourses = async(req,res) => {
+    const course = await Courses.query().select('*')
+    return res.json({success:true, courses: course})
+}

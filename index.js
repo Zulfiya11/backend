@@ -4,13 +4,15 @@ const bodyParser = require('body-parser')
 const userRouter = require('./router/users')
 const applicationRouter = require('./router/applications')
 const courseRouter = require('./router/courses')
-const cors = require('cors')
+// const cors = require('cors')
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use(cors())
+// app.use(cors())
 // parse application/json
 app.use(bodyParser.json())
+
+
 
 app.use('/courses', courseRouter),
 

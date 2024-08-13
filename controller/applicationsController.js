@@ -50,7 +50,9 @@ exports.editUserApplication = async (req,res) => {
     })
 }
 
-exports.denyUserApplication = async (req,res) =>
+exports.denyUserApplication = async (req,res) => {
     await User_applications.query().where('phone', req.body.phone).update({
         status: "denied"
     })
+    return res.status(200).json({success:true, msg:"Foydalanuvchi arizasi qabul qilinmadi"})
+}

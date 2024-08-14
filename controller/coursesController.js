@@ -23,3 +23,9 @@ exports.editCourse = async(req,res) => {
         name: req.body.name
     })
 }
+
+exports.deleteCourse = async(req,res) => {
+    await Courses.query().where('id', req.params.id).update({
+        status: req.body.status
+    })
+}

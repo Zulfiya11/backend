@@ -5,7 +5,7 @@ const byscrypt = require('bcryptjs')
 const { secret } = require('../config/config')
 
 exports.getAllUserApplications = async(req, res) => {
-    const application = await User_applications.query().select('*').where('status', "pending")
+    const application = await User_applications.query().select('*')
     return res.json({ success: true, users: application });
 }
 
@@ -36,6 +36,15 @@ exports.createUserApplication = async(req, res) => {
 }
 
 exports.editUserApplication = async (req,res) => {
+    const user = await Users.query().where('phone', req.body.phone).first()
+    if (user) {
+        return res.status(400).json({ success: false, msg: 'Foydalanuvchi mavjud' })
+    }
+    const applied = await User_applications.query().where('phone', req.body.phone).first()
+    if (applied) {
+        return res.status(400).json({ success: false, msg: "Bunday telefon raqamli foydalanuvchi ro'yxatdan o'tish uchun ariza topshirgan" })
+    }
+    
     await User_applications.query().where('phone', req.body.phone).update({
         phone:req.body.phone,
         password: req.body.password,
@@ -48,6 +57,7 @@ exports.editUserApplication = async (req,res) => {
         passport_photo: req.body.passport_photo,
         status: req.body.status
     })
+    return res.status(200).json({success:true, msg: "Foydalanuvchi ma'lumotlari tahrirlandi"})
 }
 
 exports.denyUserApplication = async (req,res) => {
@@ -56,3 +66,6 @@ exports.denyUserApplication = async (req,res) => {
     })
     return res.status(200).json({success:true, msg:"Foydalanuvchi arizasi qabul qilinmadi"})
 }
+
+
+

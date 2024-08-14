@@ -6,9 +6,9 @@ router.get('/all', applicationsController.getAllUserApplications)
 
 router.post('/create', applicationsController.createUserApplication)
 
-router.post('/edit', applicationsController.editUserApplication)
+router.post('/edit/:id', applicationsController.editUserApplication)
 
-router.post('/deny', applicationsController.denyUserApplication)
+router.post('/deny/:id', applicationsController.denyUserApplication)
 
 // router.post('/login', usersController.login)
 

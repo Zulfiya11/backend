@@ -7,6 +7,9 @@ router.post('/create', coursesController.createCourse)
 
 router.get('/all', coursesController.getaAllCourses)
 
+router.post('/edit/:id', coursesController.editCourse)
+
+
 
 // router.post('/login', usersController.login)
 

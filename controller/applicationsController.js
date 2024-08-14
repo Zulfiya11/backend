@@ -36,16 +36,16 @@ exports.createUserApplication = async(req, res) => {
 }
 
 exports.editUserApplication = async (req,res) => {
-    const user = await Users.query().where('phone', req.params.phone).first()
+    const user = await Users.query().where('phone', req.params.id).first()
     if (user) {
         return res.status(400).json({ success: false, msg: 'Foydalanuvchi mavjud' })
     }
-    const applied = await User_applications.query().where('phone', req.params.phone).first()
+    const applied = await User_applications.query().where('phone', req.params.id).first()
     if (applied) {
         return res.status(400).json({ success: false, msg: "Bunday telefon raqamli foydalanuvchi ro'yxatdan o'tish uchun ariza topshirgan" })
     }
 
-    await User_applications.query().where('phone', req.params.phone).update({
+    await User_applications.query().where('phone', req.params.id).update({
         phone:req.body.phone,
         password: req.body.password,
         name: req.body.name,
@@ -61,11 +61,8 @@ exports.editUserApplication = async (req,res) => {
 }
 
 exports.denyUserApplication = async (req,res) => {
-    await User_applications.query().where('phone', req.body.phone).update({
+    await User_applications.query().where('phone', req.params.phone).update({
         status: "denied"
     })
     return res.status(200).json({success:true, msg:"Foydalanuvchi arizasi qabul qilinmadi"})
 }
-
-
-

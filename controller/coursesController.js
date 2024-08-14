@@ -17,3 +17,9 @@ exports.getaAllCourses = async(req,res) => {
     const course = await Courses.query().select('*')
     return res.json({success:true, courses: course})
 }
+
+exports.editCourse = async(req,res) => {
+    await Courses.query().where('id', req.params.id).update({
+        name: req.body.name
+    })
+}

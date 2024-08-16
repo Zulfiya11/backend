@@ -4,8 +4,16 @@ const byscrypt = require('bcryptjs')
     // const jwt = require('jsonwebtoken')
 const { secret } = require('../config/config')
 
-exports.getAllUserApplications = async(req, res) => {
-    const application = await User_applications.query().select('*')
+exports.getAllPendingApplications = async(req, res) => {
+    const application = await User_applications.query().select('*').where('status',"pending")
+    return res.json({ success: true, users: application });
+}
+exports.getAllAcceptedApplications = async(req, res) => {
+    const application = await User_applications.query().select('*').where('status',"accepted")
+    return res.json({ success: true, users: application });
+}
+exports.getAllDeniedApplications = async(req, res) => {
+    const application = await User_applications.query().select('*').where('status',"denied")
     return res.json({ success: true, users: application });
 }
 

@@ -2,6 +2,8 @@ const router = require('express').Router()
 const applicationsController = require('../controller/applicationsController')
 
 
+router.get('/all', applicationsController.getAllPendingApplications)
+
 router.get('/pending', applicationsController.getAllPendingApplications)
 
 router.get('/accepted', applicationsController.getAllAcceptedApplications)

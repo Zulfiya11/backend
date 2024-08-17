@@ -4,14 +4,22 @@ const byscrypt = require('bcryptjs')
     // const jwt = require('jsonwebtoken')
 const { secret } = require('../config/config')
 
+
+exports.getAllUserApplications = async(req, res) => {
+    const application = await User_applications.query().select('*')
+    return res.json({ success: true, users: application });
+}
+
 exports.getAllPendingApplications = async(req, res) => {
     const application = await User_applications.query().select('*').where('status',"pending")
     return res.json({ success: true, users: application });
 }
+
 exports.getAllAcceptedApplications = async(req, res) => {
     const application = await User_applications.query().select('*').where('status',"accepted")
     return res.json({ success: true, users: application });
 }
+
 exports.getAllDeniedApplications = async(req, res) => {
     const application = await User_applications.query().select('*').where('status',"denied")
     return res.json({ success: true, users: application });
@@ -44,16 +52,16 @@ exports.createUserApplication = async(req, res) => {
 }
 
 exports.editUserApplication = async (req,res) => {
-    const user = await Users.query().where('phone', req.params.id).first()
+    const user = await Users.query().where('phone', req.body.phone).first()
     if (user) {
         return res.status(400).json({ success: false, msg: 'Foydalanuvchi mavjud' })
     }
-    const applied = await User_applications.query().where('phone', req.params.id).first()
+    const applied = await User_applications.query().where('phone', req.body.phone).first()
     if (applied) {
         return res.status(400).json({ success: false, msg: "Bunday telefon raqamli foydalanuvchi ro'yxatdan o'tish uchun ariza topshirgan" })
     }
 
-    await User_applications.query().where('phone', req.params.id).update({
+    await User_applications.query().where('id', req.params.id).update({
         phone:req.body.phone,
         password: req.body.password,
         name: req.body.name,
@@ -69,7 +77,7 @@ exports.editUserApplication = async (req,res) => {
 }
 
 exports.denyUserApplication = async (req,res) => {
-    await User_applications.query().where('phone', req.params.phone).update({
+    await User_applications.query().where('id', req.params.id).update({
         status: "denied"
     })
     return res.status(200).json({success:true, msg:"Foydalanuvchi arizasi qabul qilinmadi"})

@@ -18,8 +18,10 @@ exports.createUser = async(req, res) => {
         return res.status(400).json({ success: false, msg: 'Foydalanuvchi mavjud' })
     }
 
-    // const salt = await byscrypt.genSalt(12)
-    // const password = await byscrypt.hashSync(req.body.password, salt)
+    await User_applications.query().where('phone', req.body.phone).update({
+        status: "accepted"
+    })
+
     await Users.query().insert({
         phone: req.body.phone,
         password: req.body.password,
@@ -31,10 +33,6 @@ exports.createUser = async(req, res) => {
         expiration_date: req.body.expiration_date,
         passport_photo: req.body.passport_photo,
         access: "allowed"
-    })
-
-    await User_applications.query().where('phone', req.body.phone).update({
-        status: "accepted"
     })
 
     return res.status(201).json({ success: true, msg: 'Foydalanuvchi yaratildi' })

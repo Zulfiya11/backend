@@ -1,0 +1,34 @@
+const Modules = require('../models/modules')
+
+exports.createModule = async(req, res) => {
+    const course = await Modules.query().where('name', req.body.name).first()
+    if (course) {
+        return res.status(400).json({ success: false, msg: 'Bunday module mavjud' })
+    }
+
+    await Modules.query().insert({
+       name: req.body.name,
+       max_students: req.body.max_students,
+       length: req.body.length,
+       course_id: req.body.course_id
+    })
+
+    return res.status(201).json({ success: true, msg: 'Module yaratildi' })
+}
+
+// exports.getaAllCourses = async(req,res) => {
+//     const course = await Courses.query().select('*')
+//     return res.json({success:true, courses: course})
+// }
+
+// exports.editCourse = async(req,res) => {
+//     await Courses.query().where('id', req.params.id).update({
+//         name: req.body.name
+//     })
+// }
+
+// exports.deleteCourse = async(req,res) => {
+//     await Courses.query().where('id', req.params.id).update({
+//         status: req.body.status
+//     })
+// }

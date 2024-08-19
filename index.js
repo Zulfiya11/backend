@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const userRouter = require('./router/users')
 const applicationRouter = require('./router/applications')
 const courseRouter = require('./router/courses')
+const moduleRouter = require('./router/modules')
 // const cors = require('cors')
 
 // parse application/x-www-form-urlencoded
@@ -12,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
 app.use(bodyParser.json())
 
-
+app.use('/modules', moduleRouter),
 
 app.use('/courses', courseRouter),
 

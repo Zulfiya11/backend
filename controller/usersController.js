@@ -9,7 +9,41 @@ const Users = require('../models/users')
 exports.getAllUsers = async(req, res) => {
     const user = await Users.query().select('*')
     return res.json({ success: true, users: user });
+}
 
+exports.getAllSupers = async(req, res) => {
+    const user = await Users.query().select('*').where('role', "super")
+    return res.json({ success: true, users: user });
+}
+
+exports.getAllStaff = async(req, res) => {
+    const user = await Users.query().select('*').where('role', "staff")
+    return res.json({ success: true, users: user });
+}
+
+exports.getAllModuleLeaders = async(req, res) => {
+    const user = await Users.query().select('*').where('role', "module_leader")
+    return res.json({ success: true, users: user });
+}
+
+exports.getAllTeachers = async(req, res) => {
+    const user = await Users.query().select('*').where('role', "teacher")
+    return res.json({ success: true, users: user });
+}
+
+exports.getAllAssisstants = async(req, res) => {
+    const user = await Users.query().select('*').where('role', "assisstant")
+    return res.json({ success: true, users: user });
+}
+
+exports.getAllStudents = async(req, res) => {
+    const user = await Users.query().select('*').where('role', "student")
+    return res.json({ success: true, users: user });
+}
+
+exports.getAllGuests = async(req, res) => {
+    const user = await Users.query().select('*').where('role', "guest")
+    return res.json({ success: true, users: user });
 }
 
 exports.createUser = async(req, res) => {

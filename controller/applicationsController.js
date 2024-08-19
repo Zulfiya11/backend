@@ -56,10 +56,6 @@ exports.editUserApplication = async (req,res) => {
     if (user) {
         return res.status(400).json({ success: false, msg: 'Foydalanuvchi mavjud' })
     }
-    const applied = await User_applications.query().where('phone', req.body.phone).first()
-    if (applied) {
-        return res.status(400).json({ success: false, msg: "Bunday telefon raqamli foydalanuvchi ro'yxatdan o'tish uchun ariza topshirgan" })
-    }
 
     await User_applications.query().where('id', req.params.id).update({
         phone:req.body.phone,

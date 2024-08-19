@@ -31,8 +31,8 @@ exports.getAllTeachers = async(req, res) => {
     return res.json({ success: true, users: user });
 }
 
-exports.getAllAssisstants = async(req, res) => {
-    const user = await Users.query().select('*').where('role', "assisstant")
+exports.getAllAssistants = async(req, res) => {
+    const user = await Users.query().select('*').where('role', "assistant")
     return res.json({ success: true, users: user });
 }
 

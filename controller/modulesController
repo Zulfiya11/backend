@@ -1,8 +1,8 @@
 const Modules = require('../models/modules')
 
 exports.createModule = async(req, res) => {
-    const course = await Modules.query().where('name', req.body.name).first()
-    if (course) {
+    const module = await Modules.query().where('name', req.body.name).first()
+    if (module) {
         return res.status(400).json({ success: false, msg: 'Bunday module mavjud' })
     }
 
@@ -10,25 +10,28 @@ exports.createModule = async(req, res) => {
        name: req.body.name,
        max_students: req.body.max_students,
        length: req.body.length,
-       course_id: req.body.course_id
+       course_id: req.body.course_id,
+       status: "active"
     })
 
     return res.status(201).json({ success: true, msg: 'Module yaratildi' })
 }
 
 exports.getaAllModules = async(req,res) => {
-    const course = await Courses.query().select('*').where('course_id', req.params.course_id)
-    return res.json({success:true, courses: course})
+    const module = await Modules.query().select('*').where('course_id', req.params.course_id)
+    return res.json({success:true, modules: module})
 }
 
-// exports.editCourse = async(req,res) => {
-//     await Courses.query().where('id', req.params.id).update({
-//         name: req.body.name
-//     })
-// }
+exports.editModule = async(req,res) => {
+    await Modules.query().where('id', req.params.id).update({
+        name: req.body.name,
+        max_students: req.body.max_students,
+        length: req.body.length
+    })
+}
 
-// exports.deleteCourse = async(req,res) => {
-//     await Courses.query().where('id', req.params.id).update({
-//         status: req.body.status
-//     })
-// }
+exports.deleteModule = async(req,res) => {
+    await Modules.query().where('id', req.params.id).update({
+        status: "deleted"
+    })
+}

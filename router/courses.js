@@ -13,12 +13,6 @@ router.post('/delete/:id', coursesController.deleteCourse)
 
 
 
-// router.post('/login', usersController.login)
-
-// router.post('/repassword',usersController.forgotPassword)
-
-
-
 module.exports = router
 
 

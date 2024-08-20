@@ -5,16 +5,11 @@ const modulesController = require('../controller/modulesController')
 
 router.post('/create', modulesController.createModule)
 
-router.get('/all', modulesController.getaAllModules)
+router.get('/all/:id', modulesController.getaAllModules)
 
-// router.post('/edit/:id', coursesController.editCourse)
+router.post('/edit/:id', modulesController.editModule)
 
-// router.post('/delete/:id', coursesController.deleteCourse)
-
-// router.post('/login', usersController.login)
-
-// router.post('/repassword',usersController.forgotPassword)
-
+router.post('/delete/:id', modulesController.deleteModule)
 
 
 module.exports = router

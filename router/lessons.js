@@ -1,11 +1,11 @@
 const router = require('express').Router()
-const assignmentsController = require('../controller/coursesController')
+const lessonsController = require('../controller/lessonsController')
 
 
 
-router.post('/create', assignmentsController.createAssignment)
+router.post('/create', lessonsController.createLesson)
 
-router.get('/all', assignmentsController.getaAllAssignments)
+router.get('/all/:id', lessonsController.getAllLessons)
 
 // router.post('/edit/:id', coursesController.editCourse)
 

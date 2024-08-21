@@ -17,8 +17,10 @@ exports.createModule = async(req, res) => {
     return res.status(201).json({ success: true, msg: 'Module yaratildi' })
 }
 
-exports.getaAllModules = async(req,res) => {
-    const module = await Modules.query().select('*').where('course_id', req.params.course_id)
+exports.getAllModules = async(req,res) => {
+    console.log(req.params);
+    
+    const module = await Modules.query().where('course_id', req.params.id)
     return res.json({success:true, modules: module})
 }
 

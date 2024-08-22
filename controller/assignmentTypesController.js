@@ -10,7 +10,8 @@ exports.createAssignmentType = async(req, res) => {
        name: req.body.name,
        tests_total: req.body.tests_total,
        weight: req.body.weight,
-       module_id: req.body.module_id
+       module_id: req.body.module_id,
+       status: "active"
     })
 
     return res.status(201).json({ success: true, msg: 'Assignment type yaratildi' })
@@ -21,14 +22,16 @@ exports.getAllAssignmentTypes = async(req,res) => {
     return res.json({success:true, assignments: assignment_type})
 }
 
-// exports.editCourse = async(req,res) => {
-//     await Courses.query().where('id', req.params.id).update({
-//         name: req.body.name
-//     })
-// }
+exports.editAssignmentType = async(req,res) => {
+    await Assignment_types.query().where('id', req.params.id).update({
+        name: req.body.name,
+        tests_total: req.body.tests_total,
+        weight: req.body.weight
+    })
+}
 
-// exports.deleteCourse = async(req,res) => {
-//     await Courses.query().where('id', req.params.id).update({
-//         status: req.body.status
-//     })
-// }
+exports.deleteAssignmentType = async(req,res) => {
+    await Assignment_types.query().where('id', req.params.id).update({
+        status: "deleted"
+    })
+}

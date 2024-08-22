@@ -7,9 +7,9 @@ router.post('/create', assignmentTypesController.createAssignmentType)
 
 router.get('/all/:id', assignmentTypesController.getAllAssignmentTypes)
 
-// router.post('/edit/:id', coursesController.editCourse)
+router.post('/edit/:id', assignmentTypesController.editAssignmentType)
 
-// router.post('/delete/:id', coursesController.deleteCourse)
+router.post('/delete/:id', assignmentTypesController.deleteAssignmentType)
 
 
 

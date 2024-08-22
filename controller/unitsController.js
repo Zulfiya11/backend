@@ -4,7 +4,8 @@ exports.createUnit = async(req, res) => {
 
     await Units.query().insert({
        name: req.body.name,
-       module_id: req.body.module_id
+       module_id: req.body.module_id,
+       status: "active"
     })
 
     return res.status(201).json({ success: true, msg: 'Subject yaratildi' })
@@ -15,14 +16,15 @@ exports.getAllUnits = async(req,res) => {
     return res.json({success:true, units: unit})
 }
 
-// exports.editCourse = async(req,res) => {
-//     await Courses.query().where('id', req.params.id).update({
-//         name: req.body.name
-//     })
-// }
+exports.editUnit = async(req,res) => {
+    await Units.query().where('id', req.params.id).update({
+        name: req.body.name,
 
-// exports.deleteCourse = async(req,res) => {
-//     await Courses.query().where('id', req.params.id).update({
-//         status: req.body.status
-//     })
-// }
+    })
+}
+
+exports.deleteUnit = async(req,res) => {
+    await Units.query().where('id', req.params.id).update({
+        status: "deleted"
+    })
+}

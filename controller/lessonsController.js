@@ -8,9 +8,8 @@ exports.createLesson = async(req, res) => {
 
     await Lessons.query().insert({
        name: req.body.name,
-       tests_total: req.body.tests_total,
-       weight: req.body.weight,
-       module_id: req.body.module_id
+       module_id: req.body.module_id,
+       status: "active"
     })
 
     return res.status(201).json({ success: true, msg: 'Lesson yaratildi' })
@@ -21,14 +20,14 @@ exports.getAllLessons = async(req,res) => {
     return res.json({success:true, lessons: lesson})
 }
 
-// exports.editCourse = async(req,res) => {
-//     await Courses.query().where('id', req.params.id).update({
-//         name: req.body.name
-//     })
-// }
+exports.editLesson = async(req,res) => {
+    await Lessons.query().where('id', req.params.id).update({
+        name: req.body.name
+    })
+}
 
-// exports.deleteCourse = async(req,res) => {
-//     await Courses.query().where('id', req.params.id).update({
-//         status: req.body.status
-//     })
-// }
+exports.deleteLesson = async(req,res) => {
+    await Lessons.query().where('id', req.params.id).update({
+        status: "deleted"
+    })
+}

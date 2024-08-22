@@ -1,4 +1,6 @@
 const Modules = require('../models/modules')
+const Lessons = require('../models/lessons')
+
 
 exports.createModule = async(req, res) => {
     const module = await Modules.query().where('name', req.body.name).first()
@@ -6,7 +8,7 @@ exports.createModule = async(req, res) => {
         return res.status(400).json({ success: false, msg: 'Bunday module mavjud' })
     }
 
-    await Modules.query().insert({
+    const newModule = await Modules.query().insert({
        name: req.body.name,
        max_students: req.body.max_students,
        length: req.body.length,
@@ -14,7 +16,16 @@ exports.createModule = async(req, res) => {
        status: "active"
     })
 
-    return res.status(201).json({ success: true, msg: 'Module yaratildi' })
+    // const module_id = newModule.id
+        
+    for (let i = 0; i < req.body.length; i++) {
+        await Lessons.query().insert({
+            name: `Lesson ${i+1}`,
+            module_id: newModule.id,
+            status: "active"
+        })
+    }
+     res.status(201).json({ success: true, msg: 'Module yaratildi' })
 }
 
 exports.getAllModules = async(req,res) => {

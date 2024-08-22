@@ -7,9 +7,9 @@ router.post('/create', lessonReportTypesController.createLessonReportType)
 
 router.get('/all/:id', lessonReportTypesController.getAllLessonReportTypes)
 
-// router.post('/edit/:id', coursesController.editCourse)
+router.post('/edit/:id', lessonReportTypesController.editLessonReportType)
 
-// router.post('/delete/:id', coursesController.deleteCourse)
+router.post('/delete/:id', lessonReportTypesController.deleteLessonReportType)
 
 
 

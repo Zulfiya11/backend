@@ -1,13 +1,8 @@
 const Lesson_report_types = require('../models/lesson_report_types')
-const Lessons_report_types = require('../models/lesson_report_types')
 
 exports.createLessonReportType = async(req, res) => {
-    const lessonReportType = await Lessons_report_types.query().where('name', req.body.name).first()
-    if (lessonReportType) {
-        return res.status(400).json({ success: false, msg: 'Bunday lesson report type mavjud' })
-    }
 
-    await Lessons_report_types.query().insert({
+    await Lesson_report_types.query().insert({
        name: req.body.name,
        weight: req.body.weight,
        module_id: req.body.module_id,

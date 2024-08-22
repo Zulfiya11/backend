@@ -1,10 +1,6 @@
 const Lessons = require('../models/lessons')
 
 exports.createLesson = async(req, res) => {
-    const lesson = await Lessons.query().where('name', req.body.name).first()
-    if (lesson) {
-        return res.status(400).json({ success: false, msg: 'Bunday lesson mavjud' })
-    }
 
     await Lessons.query().insert({
        name: req.body.name,

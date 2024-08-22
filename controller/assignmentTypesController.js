@@ -1,10 +1,6 @@
 const Assignment_types = require('../models/assignment_types')
 
 exports.createAssignmentType = async(req, res) => {
-    const assignment_type = await Assignment_types.query().where('name', req.body.name).first()
-    if (assignment_type) {
-        return res.status(400).json({ success: false, msg: 'Bunday assignment type mavjud' })
-    }
 
     await Assignment_types.query().insert({
        name: req.body.name,

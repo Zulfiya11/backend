@@ -28,8 +28,12 @@ exports.editLessonUnit = async (req, res) => {
     lesson_id: req.body.lesson_id,
     unit_id: req.body.unit_id,
   });
+  return res.status(200).json({success:true, msg: "Lesson Unit tahrirlandi"})
+
 };
 
 exports.deleteLessonUnit = async (req, res) => {
   await Lesson_units.query().where("id", req.params.id).delete();
+  return res.status(200).json({success:true, msg: "Lesson Unit o'chirildi"})
+
 };

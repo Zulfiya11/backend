@@ -19,8 +19,11 @@ exports.editAssignment = async(req,res) => {
     await Assignments.query().where('id', req.params.id).update({
         name: req.body.name,
     })
+    return res.status(200).json({success:true, msg: "Assignment tahrirlandi"})
 }
 
 exports.deleteAssignment = async(req,res) => {
     await Assignments.query().where('id', req.params.id).delete()
+    return res.status(200).json({success:true, msg: "Assignment o'chirildi"})
+
 }

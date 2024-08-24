@@ -11,6 +11,7 @@ const lessonRouter = require('./router/lessons')
 const lessonReportTypeRouter = require('./router/lessonReportTypes')
 const roomRouter = require('./router/rooms')
 const lessonUnitRouter = require('./router/lessonUnits')
+const assignmentRouter = require('./router/assignments')
 
 
 
@@ -38,11 +39,13 @@ app.use('/subjects', unitRouter),
 
 app.use('/lessons', lessonRouter),
 
-app.use('/lessonreporttypes', lessonReportTypeRouter)
+app.use('/lessonreporttypes', lessonReportTypeRouter),
 
-app.use('/rooms', roomRouter)
+app.use('/rooms', roomRouter),
 
-app.use('/lessonunits', lessonUnitRouter)
+app.use('/lessonunits', lessonUnitRouter),
+
+app.use('/assignments', assignmentRouter)
 
 
 app.listen(3000, () => {

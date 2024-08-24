@@ -84,12 +84,16 @@ exports.editUser = async(req, res) => {
         expiration_date: req.body.expiration_date,
         passport_photo: req.body.passport_photo
     })
+    return res.status(200).json({success:true, msg: "User tahrirlandi"})
+
 }
 
 exports.restrictUser = async (req,res) => {
     await Users.query().where('phone', req.body.phone).update({
         access: "restricted"
     })
+    return res.status(200).json({success:true, msg: "User o'chirildi"})
+
 }
 
 

@@ -19,8 +19,12 @@ exports.editUnit = async(req,res) => {
     await Units.query().where('id', req.params.id).update({
         name: req.body.name
     })
+    return res.status(200).json({success:true, msg: "Subject tahrirlandi"})
+
 }
 
 exports.deleteUnit = async(req,res) => {
     await Units.query().where('id', req.params.id).delete()
+    return res.status(200).json({success:true, msg: "Subject o'chirildi"})
+
 }

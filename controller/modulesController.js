@@ -27,10 +27,14 @@ exports.editModule = async(req,res) => {
         max_students: req.body.max_students,
         length: req.body.length
     })
+    return res.status(200).json({success:true, msg: "Module tahrirlandi"})
+
 }
 
 exports.deleteModule = async(req,res) => {
     await Modules.query().where('id', req.params.id).update({
         status: "deleted"
     })
+    return res.status(200).json({success:true, msg: "Module o'chirildi"})
+
 }

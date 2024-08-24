@@ -23,10 +23,14 @@ exports.editCourse = async(req,res) => {
     await Courses.query().where('id', req.params.id).update({
         name: req.body.name,
     })
+    return res.status(200).json({success:true, msg: "Course tahrirlandi"})
+
 }
 
 exports.deleteCourse = async(req,res) => {
     await Courses.query().where('id', req.params.id).update({
         status: "deleted"
     })
+    return res.status(200).json({success:true, msg: "Course o'chirildi"})
+
 }

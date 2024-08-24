@@ -18,8 +18,12 @@ exports.editLesson = async(req,res) => {
     await Lessons.query().where('id', req.params.id).update({
         name: req.body.name
     })
+    return res.status(200).json({success:true, msg: "Lesson tahrirlandi"})
+
 }
 
 exports.deleteLesson = async(req,res) => {
     await Lessons.query().where('id', req.params.id).delete()
+    return res.status(200).json({success:true, msg: "Lesson o'chirildi"})
+
 }

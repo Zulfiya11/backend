@@ -25,10 +25,14 @@ exports.editRoom = async(req,res) => {
         name: req.body.name,
         max_students: req.body.max_students
     })
+    return res.status(200).json({success:true, msg: "Room tahrirlandi"})
+
 }
 
 exports.deleteRoom = async(req,res) => {
     await Rooms.query().where('id', req.params.id).update({
         status: "deleted"
     })
+    return res.status(200).json({success:true, msg: "Room o'chirildi"})
+
 }

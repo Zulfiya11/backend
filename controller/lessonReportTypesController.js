@@ -21,8 +21,12 @@ exports.editLessonReportType = async(req,res) => {
         name: req.body.name,
         weight: req.body.weight,
     })
+    return res.status(200).json({success:true, msg: "Lesson Report Type tahrirlandi"})
+
 }
 
 exports.deleteLessonReportType = async(req,res) => {
     await Lesson_report_types.query().where('id', req.params.id).delete()
+    return res.status(200).json({success:true, msg: "Lesson Report Type o'chirildi"})
+
 }

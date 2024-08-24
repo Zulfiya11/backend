@@ -20,8 +20,12 @@ exports.editAssignmentType = async(req,res) => {
         name: req.body.name,
         weight: req.body.weight
     })
+    return res.status(200).json({success:true, msg: "Assignment tpye tahrirlandi"})
+
 }
 
 exports.deleteAssignmentType = async(req,res) => {
     await Assignment_types.query().where('id', req.params.id).delete()
+    return res.status(200).json({success:true, msg: "Assignment Type o'chirildi"})
+
 }

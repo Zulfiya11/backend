@@ -10,8 +10,6 @@ exports.createLessonUnit = async (req, res) => {
         module_id: req.body.module_id
       });
 });
- 
-
   return res.status(201).json({ success: true, msg: "Lesson Unit yaratildi" });
 };
 

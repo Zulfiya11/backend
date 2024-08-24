@@ -11,7 +11,7 @@ exports.createAssignment = async(req, res) => {
 }
 
 exports.getAllAssignments = async(req,res) => {
-    const assignment = await Assignments.query().where('module_id', req.params.id)
+    const assignment = await Assignments.query().where('assignment_type_id', req.params.id)
     return res.json({success:true, assignments: assignment})
 }
 

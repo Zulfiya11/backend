@@ -2,12 +2,10 @@ const Lessons = require('../models/lessons')
 
 exports.createLesson = async(req, res) => {
 
-    await Lessons.query().insert({
+   const newLesson =  await Lessons.query().insert({
        name: req.body.name,
        module_id: req.body.module_id,
-       status: "active"
     })
-
     return res.status(201).json({ success: true, msg: 'Lesson yaratildi' })
 }
 
@@ -23,7 +21,5 @@ exports.editLesson = async(req,res) => {
 }
 
 exports.deleteLesson = async(req,res) => {
-    await Lessons.query().where('id', req.params.id).update({
-        status: "deleted"
-    })
+    await Lessons.query().where('id', req.params.id).delete()
 }

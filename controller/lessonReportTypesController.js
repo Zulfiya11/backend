@@ -5,8 +5,7 @@ exports.createLessonReportType = async(req, res) => {
     await Lesson_report_types.query().insert({
        name: req.body.name,
        weight: req.body.weight,
-       module_id: req.body.module_id,
-       status: "active"
+       module_id: req.body.module_id
     })
 
     return res.status(201).json({ success: true, msg: 'Lesson report type yaratildi' })
@@ -25,7 +24,5 @@ exports.editLessonReportType = async(req,res) => {
 }
 
 exports.deleteLessonReportType = async(req,res) => {
-    await Lesson_report_types.query().where('id', req.params.id).update({
-        status: "deleted"
-    })
+    await Lesson_report_types.query().where('id', req.params.id).delete()
 }

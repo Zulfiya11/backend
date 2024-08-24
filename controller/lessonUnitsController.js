@@ -1,23 +1,26 @@
 const Lesson_units = require("../models/lesson_units");
 
 exports.createLessonUnit = async (req, res) => {
-  for (let i = 0; i < req.body.selected_subjects.length; i++) {
-     
+
+    req.body.selected_subjects.forEach(async element => {
+
     await Lesson_units.query().insert({
         lesson_id: req.body.lesson_id,
-        unit_id: req.body.selected_subjects[i],
-        module_id: req.body.module_id,
-        status: "active",
+        unit_id: element,
+        module_id: req.body.module_id
       });
-  }
-
+});
+ 
 
   return res.status(201).json({ success: true, msg: "Lesson Unit yaratildi" });
 };
 
 exports.getAllLessonUnits = async (req, res) => {
-  const lesson_unit = await Lesson_units.query().where("module_id",req.params.id);
-  return res.json({ success: true, lesson_units: lesson_unit });
+  const knex = await Lesson_units.knex();
+
+  const data = await knex.raw(`SELECT * FROM lesson_units as ls WHERE 1;`);
+
+  return res.json({ success: true, lesson_units: data[0] });
 };
 
 exports.editLessonUnit = async (req, res) => {
@@ -28,7 +31,5 @@ exports.editLessonUnit = async (req, res) => {
 };
 
 exports.deleteLessonUnit = async (req, res) => {
-  await Lesson_units.query().where("id", req.params.id).update({
-    status: "deleted",
-  });
+  await Lesson_units.query().where("id", req.params.id).delete();
 };

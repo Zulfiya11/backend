@@ -13,6 +13,7 @@ const roomRouter = require('./router/rooms')
 const lessonUnitRouter = require('./router/lessonUnits')
 const assignmentRouter = require('./router/assignments')
 const questionRouter = require('./router/questions')
+const groupEnrolementRouter = require('./router/groupEnrolements')
 
 
 
@@ -48,7 +49,9 @@ app.use('/lessonunits', lessonUnitRouter),
 
 app.use('/assignments', assignmentRouter), 
 
-app.use('/questions', questionRouter)
+app.use('/questions', questionRouter),
+
+app.use('/groupenrolements', groupEnrolementRouter)
 
 
 app.listen(3000, () => {

@@ -14,12 +14,16 @@ exports.createModule = async(req, res) => {
      res.status(201).json({ success: true, msg: 'Module yaratildi' })
 }
 
-exports.getAllModules = async(req,res) => {
-   
-    const module = await Modules.query().where('course_id', req.params.id)
+exports.getAllModules = async (req, res) => {
+    const modules = await Modules.query()
+        .where('modules.course_id', req.params.id)
+        .leftJoin('lessons', 'lessons.module_id', 'modules.id')
+        .groupBy('modules.id')
+        .select('modules.*')
+        .count('lessons.id as length');
 
-    return res.json({success:true, modules: module})
-}
+    return res.json({ success: true, modules });
+};
 
 exports.editModule = async(req,res) => {
     await Modules.query().where('id', req.params.id).update({
@@ -36,5 +40,4 @@ exports.deleteModule = async(req,res) => {
         status: "deleted"
     })
     return res.status(200).json({success:true, msg: "Module o'chirildi"})
-
 }

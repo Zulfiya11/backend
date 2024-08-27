@@ -16,7 +16,19 @@ exports.createLessonUnit = async (req, res) => {
 exports.getAllLessonUnits = async (req, res) => {
   const knex = await Lesson_units.knex();
 
-  const data = await knex.raw(`SELECT * FROM lesson_units as ls WHERE 1;`);
+  const data = await knex.raw(`
+SELECT
+    lu.id,
+    l.name AS lesson_name,
+    u.name AS unit_name,
+    lu.module_id,
+    lu.created
+FROM
+    lesson_units lu
+JOIN
+    lessons l ON lu.lesson_id = l.id
+JOIN
+    units u ON lu.unit_id = u.id;`);
 
   return res.json({ success: true, lesson_units: data[0] });
 };

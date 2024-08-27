@@ -35,10 +35,26 @@ exports.createQuestion = async(req, res) => {
 }
 
 exports.getAllQuestions = async(req,res) => {
-   
-    const question = await Questions.query().where('unit_id', req.params.id)
+    const knex = await Questions.knex();
 
-    return res.json({success:true, questions: question})
+    const data = await knex.raw(`
+SELECT 
+    q.id AS question_id,
+    q.question,
+    MAX(CASE WHEN o.id = 1 THEN o.option END) AS option1,
+    MAX(CASE WHEN o.id = 2 THEN o.option END) AS option2,
+    MAX(CASE WHEN o.id = 3 THEN o.option END) AS option3,
+    MAX(CASE WHEN o.id = 4 THEN o.option END) AS option4
+FROM 
+    questions q
+JOIN 
+    options o
+ON 
+    q.id = o.question_id
+GROUP BY 
+    q.id, q.question;`);
+  
+    return res.json({ success: true, questions: data[0] });
 }
 
 exports.editQuestion = async(req,res) => {

@@ -10,10 +10,17 @@ exports.createAssignment = async(req, res) => {
     return res.status(201).json({ success: true, msg: 'Assignment type yaratildi' })
 }
 
-exports.getAllAssignments = async(req,res) => {
-    const assignment = await Assignments.query().where('assignment_type_id', req.params.id)
-    return res.json({success:true, assignments: assignment})
-}
+exports.getAllAssignments = async (req, res) => {
+    const assignments = await Assignments.query()
+        .where('assignment_type_id', req.params.id)
+        .select('assignments.*')
+        .join('assignment_types', 'assignments.assignment_type_id', 'assignment_types.id')
+        .select(
+            Assignments.raw('assignment_types.weight / (SELECT COUNT(*) FROM assignments WHERE assignments.assignment_type_id = ?) AS weight', [req.params.id])
+        );
+
+    return res.json({ success: true, assignments });
+};
 
 exports.editAssignment = async(req,res) => {
     await Assignments.query().where('id', req.params.id).update({

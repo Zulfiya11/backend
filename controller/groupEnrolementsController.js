@@ -8,7 +8,8 @@ exports.createGroupEnrolement = async(req, res) => {
        assistant_id: req.body.assistant_id,
        starting_date: req.body.starting_date,
        module_id: req.body.module_id,
-       when: req.body.when,
+       days: req.body.days,
+       time: req.body.time,
        room_id: req.body.room_id
     })
 
@@ -27,8 +28,8 @@ exports.editGroupEnrolement = async(req,res) => {
         assistant_id: req.body.assistant_id,
         starting_date: req.body.starting_date,
         module_id: req.body.module_id,
-        when: req.body.when,
-        room_id: req.body.room_id
+        days: req.body.days,
+        time: req.body.time,        room_id: req.body.room_id
     })
     return res.status(200).json({success:true, msg: "Group Enrolement tahrirlandi"})
 }

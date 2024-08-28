@@ -14,6 +14,7 @@ const lessonUnitRouter = require('./router/lessonUnits')
 const assignmentRouter = require('./router/assignments')
 const questionRouter = require('./router/questions')
 const groupEnrolementRouter = require('./router/groupEnrolements')
+const groupEnrolementByStudentRouter = require('./router/groupEnrolementByStudent')
 
 
 
@@ -51,7 +52,9 @@ app.use('/assignments', assignmentRouter),
 
 app.use('/questions', questionRouter),
 
-app.use('/groupenrolements', groupEnrolementRouter)
+app.use('/groupenrolements', groupEnrolementRouter),
+
+app.use('/groupenrolementsbystudent', groupEnrolementByStudentRouter)
 
 
 app.listen(3000, () => {

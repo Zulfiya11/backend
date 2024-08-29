@@ -5,7 +5,7 @@ const groupEnrolementsController = require('../controller/groupEnrolementsContro
 
 router.post('/create', groupEnrolementsController.createGroupEnrolement)
 
-router.get('/all', groupEnrolementsController.getaAllGroupEnrolements)
+router.get('/all', groupEnrolementsController.getAllGroupEnrolements)
 
 router.post('/edit/:id', groupEnrolementsController.editGroupEnrolement)
 

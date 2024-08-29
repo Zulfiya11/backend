@@ -10,8 +10,21 @@ exports.createGroupEnrolementByStudent = async(req, res) => {
 }
 
 exports.getaAllGroupEnrolementByStudent = async(req,res) => {
-    const group_enrolement_by_student = await Group_enrolement_by_student.query().where('group_enrolement_id', req.params.id)
-    return res.json({success:true, group_enrolement_by_student: group_enrolement_by_student})
+    const knex = await Group_enrolement_by_student.knex();
+
+    const data = await knex.raw(`
+        SELECT
+            ges.id,
+            CONCAT(u.name, ' ', u.surname) AS student_name,
+            ges.group_enrolement_id,
+            ges.created
+        FROM
+            group_enrolement_by_student ges
+        JOIN
+            users u ON ges.user_id = u.id;`);
+  
+    return res.json({ success: true, group_enrolement_by_student: data[0] });
+
 }
 
 exports.deleteGroupEnrolementByStudent = async(req,res) => {

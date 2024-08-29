@@ -1,5 +1,9 @@
 const Groups = require('../models/groups')
 const Group_enrolements = require('../models/group_enrolements')
+const Group_student = require('../models/group_student')
+const Lessons = require('../models/lessons')
+const Group_lessons = require('../models/group_lessons')
+const { group } = require('console')
 
 
 
@@ -7,7 +11,7 @@ exports.createGroup = async(req, res) => {
     await Group_enrolements.query().update({
         status: "started"
     })
-    await Groups.query().insert({
+    const newGroup = await Groups.query().insert({
        name: req.body.name,
        teacher_id: req.body.teacher_id,
        assistant_id: req.body.assistant_id,
@@ -21,7 +25,22 @@ exports.createGroup = async(req, res) => {
        status: "active"
     })
 
-    return res.status(201).json({ success: true, msg: 'Group Enrolement yaratildi' })
+    const lessons = await Lessons.query().where('module_id', req.body.module_id)
+
+    lessons.forEach(async element => {
+        await Group_lessons.query().insert({
+            lesson_id: element.id,
+            group_id: newGroup.id
+        })
+    });
+
+    req.body.students.forEach(async student => {
+        await Group_student.query().insert({
+               group_id: newGroup.id,
+               user_id: student.id
+        })
+    });
+    return res.status(201).json({ success: true, msg: 'Group yaratildi' })
 }
 
 exports.getAllGroups = async (req, res) => {

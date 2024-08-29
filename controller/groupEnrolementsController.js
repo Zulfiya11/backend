@@ -35,6 +35,11 @@ exports.getAllGroupEnrolements = async (req, res) => {
             ge.days,
             ge.time,
             ge.created
+            r.id AS room_id,
+            t.id AS teacher_id,
+            a.id AS assistant_id,
+            c.id AS course_id,
+            m.id AS module_id
         FROM
             group_enrolements ge
         JOIN

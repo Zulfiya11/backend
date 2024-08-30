@@ -34,7 +34,7 @@ exports.getAllGroupEnrolements = async (req, res) => {
             ge.starting_date,
             ge.days,
             ge.time,
-            ge.created
+            ge.created,
             r.id AS room_id,
             t.id AS teacher_id,
             a.id AS assistant_id,

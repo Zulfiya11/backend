@@ -16,6 +16,7 @@ const questionRouter = require('./router/questions')
 const groupEnrolementRouter = require('./router/groupEnrolements')
 const groupEnrolementByStudentRouter = require('./router/groupEnrolementByStudent')
 const groupRouter = require('./router/groups')
+const groupStudentRouter = require('./router/groupStudents')
 
 
 
@@ -57,7 +58,9 @@ app.use('/groupenrolements', groupEnrolementRouter),
 
 app.use('/groupenrolementsbystudent', groupEnrolementByStudentRouter),
 
-app.use('/groups', groupRouter)
+app.use('/groups', groupRouter),
+
+app.use('/groupstudents', groupStudentRouter)
 
 
 app.listen(3000, () => {

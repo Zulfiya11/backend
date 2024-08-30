@@ -58,7 +58,7 @@ exports.getAllGroups = async (req, res) => {
             g.starting_date,
             g.days,
             g.time,
-            g.created
+            g.created,
             g.status
         FROM
             groups g
@@ -73,7 +73,7 @@ exports.getAllGroups = async (req, res) => {
         JOIN
             courses c ON g.course_id = c.id;`);
   
-    return res.json({ success: true, group_enrolements: data[0] });
+    return res.json({ success: true, groups: data[0] });
 };
 
 exports.editGroup = async(req,res) => {

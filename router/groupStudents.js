@@ -1,0 +1,20 @@
+const router = require('express').Router()
+const groupStudentsController = require('../controller/groupStudentsController')
+
+
+
+router.post('/create', groupStudentsController.createGroupStudent)
+
+router.get('/all/:id', groupStudentsController.getAllGroupStudents)
+
+router.post('/edit/:id', groupStudentsController.editGroupStudent)
+
+router.post('/delete/:id', groupStudentsController.deleteGroupStudent)
+
+
+
+module.exports = router
+
+
+
+

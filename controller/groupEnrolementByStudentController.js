@@ -17,11 +17,14 @@ exports.getaAllGroupEnrolementByStudent = async(req,res) => {
             ges.id,
             CONCAT(u.name, ' ', u.surname) AS student_name,
             ges.group_enrolement_id,
-            ges.created
+            ges.created,
+            u.id AS student_id
         FROM
             group_enrolement_by_student ges
         JOIN
-            users u ON ges.user_id = u.id;`);
+            users u ON ges.user_id = u.id
+        WHERE
+            ges.group_enrolement_id = ?;`, [req.params.id]);
   
     return res.json({ success: true, group_enrolement_by_student: data[0] });
 

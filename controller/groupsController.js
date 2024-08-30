@@ -89,17 +89,18 @@ exports.editGroup = async(req,res) => {
         room_id: req.body.room_id,
         starting_date: req.body.starting_date
     })
-    return res.status(200).json({success:true, msg: "Group Enrolement tahrirlandi"})
+    return res.status(200).json({success:true, msg: "Group tahrirlandi"})
 }
 
 exports.deleteGroup = async(req,res) => {
     await Groups.query().where('id', req.params.id).delete()
 
-    return res.status(200).json({success:true, msg: "Course o'chirildi"})
+    return res.status(200).json({success:true, msg: "Group o'chirildi"})
 }
 
 exports.finishGroup = async (req,res) => {
     await Groups.query().where('id', req.params.id).update({
         status: "finished"
     })
+    return res.status(200).json({success: true, msg: "Group tugatildi"})
 }

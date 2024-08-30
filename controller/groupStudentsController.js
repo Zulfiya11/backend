@@ -15,15 +15,6 @@ exports.getAllGroupStudents = async(req,res) => {
     return res.json({ success: true, group_students: group_students });
 }
 
-exports.editGroupStudent = async(req, res) => {
-    await Group_student.query().insert({
-       user_id: req.body.user_id,
-       group_id: req.body.group_id
-    })
-
-    return res.status(201).json({ success: true, msg: 'Group Student tahrirlandi' })
-}
-
 exports.deleteGroupStudent = async(req,res) => {
     await Group_student.query().where('id', req.params.id).delete()
   

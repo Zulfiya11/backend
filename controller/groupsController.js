@@ -18,7 +18,7 @@ exports.createGroup = async(req, res) => {
        starting_date: req.body.starting_date,
        course_id: req.body.course_id,
        module_id: req.body.module_id,
-       days: req.body.days,
+       day_id: req.body.day_id,
        time: req.body.time,
        room_id: req.body.room_id,
        starting_date: req.body.starting_date,
@@ -84,7 +84,7 @@ exports.editGroup = async(req,res) => {
         starting_date: req.body.starting_date,
         course_id: req.body.course_id,
         module_id: req.body.module_id,
-        days: req.body.days,
+        day_id: req.body.day_id,
         time: req.body.time,
         room_id: req.body.room_id,
         starting_date: req.body.starting_date

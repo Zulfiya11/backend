@@ -4,6 +4,10 @@ const Group_student = require('../models/group_student')
 const Lessons = require('../models/lessons')
 const Group_lessons = require('../models/group_lessons')
 const { group } = require('console')
+const Group_days = require('../models/group_days')
+const { rootCertificates } = require('tls')
+const { stat } = require('fs')
+
 
 
 
@@ -18,21 +22,33 @@ exports.createGroup = async(req, res) => {
        starting_date: req.body.starting_date,
        course_id: req.body.course_id,
        module_id: req.body.module_id,
-       day_id: req.body.day_id,
        time: req.body.time,
        room_id: req.body.room_id,
        starting_date: req.body.starting_date,
        status: "active"
     })
 
-    const lessons = await Lessons.query().where('module_id', req.body.module_id)
-
-    lessons.forEach(async element => {
-        await Group_lessons.query().insert({
-            lesson_id: element.id,
-            group_id: newGroup.id
+    req.body.days.forEach(async element => {
+        await Group_days.query().insert({
+            group_id: newGroup.id,
+            day_id: element.id
         })
     });
+
+    const lessons = await Lessons.query().where('module_id', req.body.module_id)
+    let status = 0
+
+    for (let i = 0; i<lessons.length; i++) {
+
+        await Group_lessons.query().insert({
+            lesson_id: lessons[i].id,
+            group_id: newGroup.id,
+            room_id: req.body.room_id,
+            time: req.body.time,
+            day_id: req.body.days[status].id
+        })
+        status = (status+1)%req.body.days.length
+    }
 
     req.body.students.forEach(async student => {
         await Group_student.query().insert({
@@ -56,7 +72,7 @@ exports.getAllGroups = async (req, res) => {
             m.name AS module_name,
             r.name AS room_name,
             g.starting_date,
-            g.days,
+            g.day_id,
             g.time,
             g.created,
             g.status

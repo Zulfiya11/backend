@@ -1,20 +1,26 @@
 const Group_enrolements = require('../models/group_enrolements')
+const Group_enrolement_days = require('../models/group_enrolement_days')
 
 
 exports.createGroupEnrolement = async(req, res) => {
 
-    await Group_enrolements.query().insert({
+    const newGroupEnrolement = await Group_enrolements.query().insert({
        name: req.body.name,
        teacher_id: req.body.teacher_id,
        assistant_id: req.body.assistant_id,
        starting_date: req.body.starting_date,
        course_id: req.body.course_id,
        module_id: req.body.module_id,
-       day_id: req.body.day_id,
        time: req.body.time,
        room_id: req.body.room_id,
        status: "not started"
     })
+    req.body.days.forEach(async element => {
+        await Group_enrolement_days.query().insert({
+            group_enrolement_id: newGroupEnrolement.id,
+            day_id: element.id
+        })
+    });
 
     return res.status(201).json({ success: true, msg: 'Group Enrolement yaratildi' })
 }
@@ -32,7 +38,7 @@ exports.getAllGroupEnrolements = async (req, res) => {
             m.name AS module_name,
             r.name AS room_name,
             ge.starting_date,
-            ge.days,
+            ge.day_id,
             ge.time,
             ge.created,
             r.id AS room_id,

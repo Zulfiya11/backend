@@ -9,7 +9,7 @@ exports.createGroupEnrolementByStudent = async(req, res) => {
     return res.status(201).json({ success: true, msg: 'Group Enrolement by Student yaratildi' })
 }
 
-exports.getaAllGroupEnrolementByStudent = async(req,res) => {
+exports.getAllGroupEnrolementByStudent = async(req,res) => {
     const knex = await Group_enrolement_by_student.knex();
 
     const data = await knex.raw(`

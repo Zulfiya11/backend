@@ -5,7 +5,7 @@ const groupEnrolementByStudentController = require('../controller/groupEnrolemen
 
 router.post('/create', groupEnrolementByStudentController.createGroupEnrolementByStudent)
 
-router.get('/all/:id', groupEnrolementByStudentController.getaAllGroupEnrolementByStudent)
+router.get('/all/:id', groupEnrolementByStudentController.getAllGroupEnrolementByStudent)
 
 router.post('/delete/:id', groupEnrolementByStudentController.deleteGroupEnrolementByStudent)
 

@@ -10,13 +10,28 @@ exports.createGroupStudent = async(req, res) => {
 }
 
 exports.getAllGroupStudents = async(req,res) => {
-    const group_students = await Group_student.query().select('*').where('group_id', req.params.id)
+    const knex = await Group_student.knex();
+
+    const data = await knex.raw(`
+        SELECT
+            gs.id,
+            CONCAT(u.name, ' ', u.surname) AS student_name,
+            gs.group_id,
+            gs.created,
+            u.id AS student_id
+        FROM
+            group_student gs
+        JOIN
+            users u ON gs.user_id = u.id
+        WHERE
+            gs.group_id = ?;`, [req.params.id]);
   
-    return res.json({ success: true, group_students: group_students });
+    return res.json({ success: true, group_student: data[0] });
+
 }
 
 exports.deleteGroupStudent = async(req,res) => {
     await Group_student.query().where('id', req.params.id).delete()
   
     return res.status(200).json({success:true, msg: "Group Student o'chirildi"})
-}
+}   

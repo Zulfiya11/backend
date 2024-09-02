@@ -38,7 +38,6 @@ exports.getAllGroupEnrolements = async (req, res) => {
             m.name AS module_name,
             r.name AS room_name,
             ge.starting_date,
-            ge.day_id,
             ge.time,
             ge.created,
             r.id AS room_id,
@@ -80,8 +79,10 @@ exports.editGroupEnrolement = async(req,res) => {
 }
 
 exports.deleteGroupEnrolement = async(req,res) => {
+    await Group_enrolement_days.query().where('group_enrolement_id', req.params.id).delete()
+
     await Group_enrolements.query().where('id', req.params.id).delete()
 
-    return res.status(200).json({success:true, msg: "Course o'chirildi"})
+    return res.status(200).json({success:true, msg: "Group Enrolement o'chirildi"})
 
 }

@@ -3,10 +3,10 @@ const Group_enrolements = require("../models/group_enrolements");
 const Group_student = require("../models/group_student");
 const Lessons = require("../models/lessons");
 const Group_lessons = require("../models/group_lessons");
-const { group, log } = require("console");
 const Group_days = require("../models/group_days");
-const { rootCertificates } = require("tls");
-const { stat } = require("fs");
+const Lesson_report_types = require("../models/lesson_report_types");
+const Lesson_report_by_user = require("../models/lesson_report_by_user");
+
 
 exports.createGroup = async(req, res) => {
     await Group_enrolements.query().update({
@@ -25,12 +25,12 @@ exports.createGroup = async(req, res) => {
        status: "active"
     })
 
-    req.body.days.forEach(async element => {
+    for(let i = 0 ; i < req.body.days.length; i++) {
         await Group_days.query().insert({
             group_id: newGroup.id,
             day_id: element.id
         })
-    });
+    }
 
     const lessons = await Lessons.query().where('module_id', req.body.module_id)
     let status = 0
@@ -47,12 +47,30 @@ exports.createGroup = async(req, res) => {
         status = (status+1)%req.body.days.length
     }
 
-    req.body.students.forEach(async student => {
-        await Group_student.query().insert({
-               group_id: newGroup.id,
-               user_id: student.id
+    const lesson_report_types = await  Lesson_report_types.query().where('module_id', req.body.module_id)
+    const groupLessons = await Group_lessons.query().where('group_id', newGroup.id)
+
+    for (let i = 0; i < req.body.students.length; i++) {
+        const newGroupStudent = await Group_student.query().insert({
+            group_id: newGroup.id,
+            user_id: student.id
         })
-    });
+
+        for(let k = 0; k< groupLessons; k++){
+
+            for(let j=0 ; j < lesson_report_types; j++) {
+                await Lesson_report_by_user.query().insert({
+                    group_student_id: newGroupStudent.id,
+                    lesson_report_type_id: lesson_report_types[j].id ,
+                    group_lesson_id: groupLessons[k].id
+                })
+            }
+
+        }
+        
+    }
+
+
     return res.status(201).json({ success: true, msg: 'Group yaratildi' })
 }
 
@@ -71,7 +89,8 @@ exports.getAllGroups = async (req, res) => {
             g.starting_date,
             g.time,
             g.created,
-            g.status
+            g.status,
+            m.id AS module_id
         FROM
             groups g
         JOIN

@@ -18,7 +18,7 @@ exports.getAllAssignmentTypes = async (req, res) => {
         .select('assignment_types.*')
         .count('assignments.id as tests_total');
 
-    return res.json({ success: true, assignments: assignmentTypes });
+    return res.json({ success: true, assignmenttypes: assignmentTypes });
 };
 
 exports.editAssignmentType = async(req,res) => {

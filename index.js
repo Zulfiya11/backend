@@ -20,6 +20,7 @@ const groupStudentRouter = require('./router/groupStudents')
 const groupLessonRouter = require('./router/groupLessons')
 const dayRouter = require('./router/days')
 const groupEnrolementDayRouter = require('./router/groupEnrolementDays')
+const lessonReportByUserRouter = require('./router/lessonReportByUser')
 
 
 
@@ -70,7 +71,9 @@ app.use('/grouplessons', groupLessonRouter),
 
 app.use('/days', dayRouter),
 
-app.use('/groupenrolementdays', groupEnrolementDayRouter)
+app.use('/groupenrolementdays', groupEnrolementDayRouter),
+
+app.use('/lessonreportsbyuser', lessonReportByUserRouter)
 
 
 app.listen(3000, () => {

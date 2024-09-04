@@ -56,18 +56,19 @@ exports.createGroup = async(req, res) => {
             user_id: student.id
         })
 
-        for(let k = 0; k< groupLessons; k++){
+        for(let k = 0; k< groupLessons.length; k++){
 
-            for(let j=0 ; j < lesson_report_types; j++) {
+            for(let j=0 ; j < lesson_report_types.length; j++) {
                 await Lesson_report_by_user.query().insert({
                     group_student_id: newGroupStudent.id,
                     lesson_report_type_id: lesson_report_types[j].id ,
-                    group_lesson_id: groupLessons[k].id
+                    group_lesson_id: groupLessons[k].id,
+                    group_id: newGroup.id
                 })
             }
 
         }
-        
+
     }
 
 

@@ -6,6 +6,8 @@ const lessonReportByUserController = require('../controller/lessonReportByUserCo
 
 router.post('/all/:id', lessonReportByUserController.getAllLessonReportByUser)
 
+router.post('/all/bylesson/:id', lessonReportByUserController.getAllLessonReportByUserByLesson)
+
 router.post('/edit/:id', lessonReportByUserController.editLessonReportByUser)
 
 

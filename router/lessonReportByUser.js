@@ -4,7 +4,7 @@ const lessonReportByUserController = require('../controller/lessonReportByUserCo
 
 
 
-router.get('/all/:id', lessonReportByUserController.getAllLessonReportByUser)
+router.post('/all/:id', lessonReportByUserController.getAllLessonReportByUser)
 
 router.post('/edit/:id', lessonReportByUserController.editLessonReportByUser)
 

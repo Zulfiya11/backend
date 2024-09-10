@@ -6,6 +6,7 @@ const { group } = require('console');
 
 
 exports.getAllLessonReportByUser = async (req, res) => {
+    const group_lessons = await Group_lessons.query().where('group_id', req.params.id)
     let group_student = await Group_student.query()
     .where("group_id", req.params.id)
     .join('users', 'group_student.user_id', 'users.id') // Join users table
@@ -26,7 +27,7 @@ exports.getAllLessonReportByUser = async (req, res) => {
         })
     );
 
-    return res.status(200).json({ success: true, data: result });
+    return res.status(200).json({ success: true, group_lessons: group_lessons, data: result });
 };
 
 

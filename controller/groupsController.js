@@ -4,8 +4,6 @@ const Group_student = require("../models/group_student");
 const Lessons = require("../models/lessons");
 const Group_lessons = require("../models/group_lessons");
 const Group_days = require("../models/group_days");
-const Lesson_report_types = require("../models/lesson_report_types");
-const Lesson_report_by_user = require("../models/lesson_report_by_user");
 
 
 exports.createGroup = async(req, res) => {
@@ -46,8 +44,6 @@ exports.createGroup = async(req, res) => {
         })
         status = (status+1)%req.body.days.length
     }
-
-    const lesson_report_types = await  Lesson_report_types.query().where('module_id', req.body.module_id)
     const groupLessons = await Group_lessons.query().where('group_id', newGroup.id)
 
     for (let i = 0; i < req.body.students.length; i++) {
@@ -55,20 +51,6 @@ exports.createGroup = async(req, res) => {
             group_id: newGroup.id,
             user_id: student.id
         })
-
-        for(let k = 0; k< groupLessons.length; k++){
-
-            for(let j=0 ; j < lesson_report_types.length; j++) {
-                await Lesson_report_by_user.query().insert({
-                    group_student_id: newGroupStudent.id,
-                    lesson_report_type_id: lesson_report_types[j].id ,
-                    group_lesson_id: groupLessons[k].id,
-                    group_id: newGroup.id
-                })
-            }
-
-        }
-
     }
     return res.status(201).json({ success: true, msg: 'Group yaratildi' })
 }

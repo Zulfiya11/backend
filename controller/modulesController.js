@@ -1,14 +1,19 @@
 const Modules = require('../models/modules')
-const Lessons = require('../models/lessons')
+const Group_attendance = require('../models/group_attendance')
 
 
 exports.createModule = async(req, res) => {
 
-     await Modules.query().insert({
+    const newModule = await Modules.query().insert({
        name: req.body.name,
        max_students: req.body.max_students,
        course_id: req.body.course_id,
        status: "active"
+    })
+
+    await Group_attendance.query().insert({
+        name: "Attendance",
+        module_id: newModule.id
     })
         
      res.status(201).json({ success: true, msg: 'Module yaratildi' })

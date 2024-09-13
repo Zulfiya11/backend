@@ -3,10 +3,9 @@ const lessonReportByUserController = require('../controller/lessonReportByUserCo
 
 
 
+router.post('/create/:id', lessonReportByUserController.createLessonReportByUser)
 
 router.post('/all/:id', lessonReportByUserController.getAllLessonReportByUser)
-
-router.post('/all/bylesson/:id', lessonReportByUserController.getAllLessonReportByUserByLesson)
 
 router.post('/edit/:id', lessonReportByUserController.editLessonReportByUser)
 

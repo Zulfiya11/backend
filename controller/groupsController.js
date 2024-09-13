@@ -4,12 +4,18 @@ const Group_student = require("../models/group_student");
 const Lessons = require("../models/lessons");
 const Group_lessons = require("../models/group_lessons");
 const Group_days = require("../models/group_days");
+const Modules = require("../models/modules");
+const Courses = require("../models/courses");
+
 
 
 exports.createGroup = async(req, res) => {
     await Group_enrolements.query().update({
         status: "started"
     })
+    const module = await Modules.query().where('id', req.body.module_id)
+    const course = await Courses.query().where('id', req.body.course_id)
+
     const newGroup = await Groups.query().insert({
        name: req.body.name,
        teacher_id: req.body.teacher_id,
@@ -22,11 +28,16 @@ exports.createGroup = async(req, res) => {
        starting_date: req.body.starting_date,
        status: "active"
     })
+    const groupname = `${module.id}${course.name}${newGroup.id}`
+
+    await Groups.query().where('id', newGroup.id).update({
+        name: groupname
+    })
 
     for(let i = 0 ; i < req.body.days.length; i++) {
         await Group_days.query().insert({
             group_id: newGroup.id,
-            day_id: element.id
+            day_id: req.body.days[i].id
         })
     }
 
@@ -44,12 +55,11 @@ exports.createGroup = async(req, res) => {
         })
         status = (status+1)%req.body.days.length
     }
-    const groupLessons = await Group_lessons.query().where('group_id', newGroup.id)
 
     for (let i = 0; i < req.body.students.length; i++) {
         const newGroupStudent = await Group_student.query().insert({
             group_id: newGroup.id,
-            user_id: student.id
+            user_id: req.body.students[i].id
         })
     }
     return res.status(201).json({ success: true, msg: 'Group yaratildi' })

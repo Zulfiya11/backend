@@ -3,7 +3,7 @@ const groupStudentsController = require('../controller/groupStudentsController')
 
 
 
-router.post('/create', groupStudentsController.createGroupStudent)
+router.post('/create/:id', groupStudentsController.createGroupStudent)
 
 router.get('/all/:id', groupStudentsController.getAllGroupStudents)
 

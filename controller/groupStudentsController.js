@@ -3,7 +3,7 @@ const Group_student = require('../models/group_student')
 exports.createGroupStudent = async(req, res) => {
     await Group_student.query().insert({
        user_id: req.body.user_id,
-       group_id: req.body.group_id
+       group_id: req.params.id
     })
 
     return res.status(201).json({ success: true, msg: 'Group Student yaratildi' })

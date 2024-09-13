@@ -3,7 +3,7 @@ const groupAttendanceController = require('../controller/groupAttendanceControll
 
 
 
-router.post('/create', groupEnrolementByStudentController.createGroupEnrolementByStudent)
+router.post('/create/:id', groupAttendanceController.createGroupAttendance)
 
 router.get('/all/:id', groupAttendanceController.getAllGroupAttendance)
 

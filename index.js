@@ -22,6 +22,7 @@ const dayRouter = require('./router/days')
 const groupEnrolementDayRouter = require('./router/groupEnrolementDays')
 const lessonReportByUserRouter = require('./router/lessonReportByUser')
 const groupAttendanceRouter = require('./router/groupAttendance')
+const questionLevelRouter = require('./router/questionLevels')
 
 
 
@@ -76,7 +77,10 @@ app.use('/groupenrolementdays', groupEnrolementDayRouter),
 
 app.use('/lessonreportsbyuser', lessonReportByUserRouter),
 
-app.use('/groupattendance', groupAttendanceRouter)
+app.use('/groupattendance', groupAttendanceRouter),
+
+app.use('/questionlevels', questionLevelRouter)
+
 
 
 app.listen(3000, () => {

@@ -33,8 +33,8 @@ exports.getAllLessonReportByUser = async (req, res) => {
     .where("group_id", req.params.id)
     .join('users', 'group_student.user_id', 'users.id') // Join users table
     .select(
-        'group_student.id AS id', // Select group_student id
-        'users.name AS student_name' // Select name from users table
+        'group_student.id AS id', 
+        'users.name AS student_name' 
     );    let result = await Promise.all(
         group_student.map(async (e) => {
             

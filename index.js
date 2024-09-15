@@ -24,6 +24,7 @@ const lessonReportByUserRouter = require('./router/lessonReportByUser')
 const groupAttendanceRouter = require('./router/groupAttendance')
 const questionLevelRouter = require('./router/questionLevels')
 const assignmentLevelRouter = require('./router/assignmentLevels')
+const optionRouter = require('./router/options')
 
 
 
@@ -82,7 +83,10 @@ app.use('/groupattendance', groupAttendanceRouter),
 
 app.use('/questionlevels', questionLevelRouter),
 
-app.use('/assignmentlevels', assignmentLevelRouter)
+app.use('/assignmentlevels', assignmentLevelRouter),
+
+app.use('/options', optionRouter)
+
 
 
 

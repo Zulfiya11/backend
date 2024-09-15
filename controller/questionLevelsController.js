@@ -1,4 +1,5 @@
 const Question_levels = require('../models/question_levels')
+const Modules = require('../models/modules')
 
 
 exports.createQuestionLevel = async(req, res) => {
@@ -12,8 +13,9 @@ exports.createQuestionLevel = async(req, res) => {
 }
 
 exports.getAllQuestionLevels = async (req, res) => {
-    const question_levels = await Question_levels.query().where('course_id', req.params.id)
-
+    const module = await Modules.query().where('id', req.params.id).first()
+    const question_levels = await Question_levels.query().where('course_id', module.course_id)
+        
     return res.json({ success: true, question_levels: question_levels });
 };
 

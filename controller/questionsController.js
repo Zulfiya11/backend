@@ -32,7 +32,7 @@ exports.createQuestion = async (req, res) => {
 };
 
 exports.getAllQuestions = async (req, res) => {
-    let questions = await Questions.query().select("*");
+    let questions = await Questions.query().where('unit_id', req.params.id).andWhere('level_id', req.body.level_id);
     let result = await Promise.all(
       questions.map(async (e) => {
         let ans = await Options.query().where("question_id", e.id);

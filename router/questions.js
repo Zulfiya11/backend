@@ -5,7 +5,7 @@ const questionsController = require('../controller/questionsController.js')
 
 router.post('/create', questionsController.createQuestion)
 
-router.get('/all/:id', questionsController.getAllQuestions)
+router.post('/all/:id', questionsController.getAllQuestions)
 
 router.post('/edit/:id', questionsController.editQuestion)
 

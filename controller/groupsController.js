@@ -13,8 +13,8 @@ exports.createGroup = async(req, res) => {
     await Group_enrolements.query().update({
         status: "started"
     })
-    const module = await Modules.query().where('id', req.body.module_id)
-    const course = await Courses.query().where('id', req.body.course_id)
+    const module = await Modules.query().where('id', req.body.module_id).first()
+    const course = await Courses.query().where('id', req.body.course_id).first()
 
     const newGroup = await Groups.query().insert({
        name: req.body.name,

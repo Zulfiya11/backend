@@ -22,9 +22,9 @@ router.post('/create', usersController.createUser)
 
 router.post('/edit', usersController.editUser)
 
-// router.post('/login', usersController.login)
+router.post('/login', usersController.login)
 
-// router.post('/repassword',usersController.forgotPassword)
+router.post('/forgotpassword',usersController.forgotPassword)
 
 
 

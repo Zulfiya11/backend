@@ -1,4 +1,3 @@
-const byscrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { secret } = require('../config/config')
 const User_applications = require('../models/user_applications')
@@ -102,52 +101,55 @@ exports.restrictUser = async (req,res) => {
 
 
 
-// exports.login = async (req,res) => {
-//     const student = await Students.query().where('login', req.body.login).first()
-//     if(!student){
-//         return res.status(404).json({success: false, msg: 'Foydalanuvchi topilmadi'})
-//     }
-//     const checkPassword = await byscrypt.compareSync (
-//     req.body.password,
-//     student.password
-//     );
-//     if (!checkPassword) {
-//         return res.status(400).json({success:false, msg: 'Parol xato'})
-//     }
-//     const payload = {
-//         id: student.id
-//     };
-//     const token = await jwt.sign(payload,secret,{expiresIn: '1d'})
-//     return res.status(200).json({success:true, token: token})
-// }
+exports.login = async (req,res) => {
+    const student = await Users.query().where('phone', req.body.phone).first()
+    if(!student){
+        return res.status(404).json({success: false, msg: 'Foydalanuvchi topilmadi'})
+    }
+    const checkPassword = await byscrypt.compareSync (
+    req.body.password,
+    student.password
+    );
+    if (!checkPassword) {
+        return res.status(400).json({success:false, msg: 'Parol xato'})
+    }
+    const payload = {
+        id: student.id
+    };
+    const token = jwt.sign(payload,secret,{expiresIn: '1h'})
+    await Users.query().update({
+        token: token
+    })
+    return res.status(200).json({success:true, token: token})
+}
 
-// exports.forgotPassword = async (req,res) => {
-//     if(req.body.step == 1){
-//         const student = await Students.query().where('login', req.body.login).first()
-//         if (!student) {
-//             return res.status(404).json({success: false, msg: 'Foydalanuvchi topilmadi'})
-//         }
-//         const code = Math.floor(Math.random() * 10000)
-//         await Students.query().where('login',req.body.login).update({
-//             code:code
-//         })
+exports.forgotPassword = async (req,res) => {
+    if(req.body.step == 1){
+        const student = await Users.query().where('phone', req.body.phone).first()
+        if (!student) {
+            return res.status(404).json({success: false, msg: 'Foydalanuvchi topilmadi'})
+        }
+        const code = Math.floor(Math.random() * 10000)
+        await Users.query().where('phone',req.body.phone).update({
+            code:code
+        })
 
-//         return res.status(200).json({success: true,code:code})
-//     }
-//     if(req.body.step == 2){
+        return res.status(200).json({success: true,code:code})
+    }
+    if(req.body.step == 2){
 
-//         const student = await Students.query().where('login',req.body.login)
-//         if(!student){
-//             return res.status(400).json({success: false, msg: 'user-not-found'})
-//         }
+        const student = await Users.query().where('phone',req.body.phone)
+        if(!student){
+            return res.status(400).json({success: false, msg: 'user-not-found'})
+        }
 
-//         if(student.code != null && student.code != req.body.code ){
-//             return res.status(400).json({success: false, msg: 'code-fail'}) 
-//         }
+        if(student.code != null && student.code != req.body.code ){
+            return res.status(400).json({success: false, msg: 'code-fail'}) 
+        }
 
 
 
-//         return res.status(200).json({success:true, msg: 'Parol ozgartirildi'})
-//     }
+        return res.status(200).json({success:true, msg: 'Parol ozgartirildi'})
+    }
 
-// }
+}

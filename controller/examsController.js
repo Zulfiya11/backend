@@ -19,7 +19,7 @@ exports.createExam = async (req, res) => {
                     break;
                 }
 
-                let random = Math.floor(Math.random() * (questions.length + 1));
+                let random = Math.floor(Math.random() * (questions.length));
 
                 await Exams.query().insert({
                     question_id: questions[random].id,

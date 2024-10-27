@@ -26,6 +26,8 @@ router.post('/login', usersController.login)
 
 router.post('/forgotpassword',usersController.forgotPassword)
 
+router.get("/me", usersController.me);
+
 
 
 module.exports = router

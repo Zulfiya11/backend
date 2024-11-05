@@ -9,8 +9,6 @@ router.get('/all/:id', unitsController.getAllUnits)
 
 router.post('/edit/:id', unitsController.editUnit)
 
-router.post('/delete/:id', unitsController.deleteUnit)
-
 
 
 module.exports = router

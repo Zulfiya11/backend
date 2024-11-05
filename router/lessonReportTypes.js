@@ -9,8 +9,6 @@ router.get('/all/:id', lessonReportTypesController.getAllLessonReportTypes)
 
 router.post('/edit/:id', lessonReportTypesController.editLessonReportType)
 
-router.post('/delete/:id', lessonReportTypesController.deleteLessonReportType)
-
 
 
 module.exports = router

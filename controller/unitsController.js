@@ -1,30 +1,39 @@
-const Units = require('../models/units')
+const Units = require("../models/units");
 
-exports.createUnit = async(req, res) => {
+exports.createUnit = async (req, res) => {
+    try {
+        await Units.query().insert({
+            name: req.body.name,
+            module_id: req.body.module_id,
+            status: "active",
+        });
+    
+        return res.status(201).json({ success: true, msg: "Subject yaratildi" });
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({success: false, error: error.message})
+    }
+};
 
-    await Units.query().insert({
-       name: req.body.name,
-       module_id: req.body.module_id,
-    })
+exports.getAllUnits = async (req, res) => {
+    try {
+        const unit = await Units.query().where("module_id", req.params.id);
+        return res.json({ success: true, units: unit });
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({success: false, error: error.message})
+    }
+};
 
-    return res.status(201).json({ success: true, msg: 'Subject yaratildi' })
-}
-
-exports.getAllUnits = async(req,res) => {
-    const unit = await Units.query().where('module_id', req.params.id)
-    return res.json({success:true, units: unit})
-}
-
-exports.editUnit = async(req,res) => {
-    await Units.query().where('id', req.params.id).update({
-        name: req.body.name
-    })
-    return res.status(200).json({success:true, msg: "Subject tahrirlandi"})
-
-}
-
-exports.deleteUnit = async(req,res) => {
-    await Units.query().where('id', req.params.id).delete()
-    return res.status(200).json({success:true, msg: "Subject o'chirildi"})
-
-}
+exports.editUnit = async (req, res) => {
+    try {
+        await Units.query().where("id", req.params.id).update({
+            name: req.body.name,
+            status: req.body.status,
+        });
+        return res.status(200).json({ success: true, msg: "Subject tahrirlandi" });
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({success: false, error: error.message})
+    }
+};

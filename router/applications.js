@@ -4,12 +4,6 @@ const applicationsController = require('../controller/applicationsController')
 
 router.get('/all', applicationsController.getAllUserApplications)
 
-router.get('/pending', applicationsController.getAllPendingApplications)
-
-router.get('/accepted', applicationsController.getAllAcceptedApplications)
-
-router.get('/denied', applicationsController.getAllDeniedApplications)
-
 router.post('/create', applicationsController.createUserApplication)
 
 router.post('/edit/:id', applicationsController.editUserApplication)

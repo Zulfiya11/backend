@@ -4,23 +4,9 @@ const usersController = require('../controller/usersController')
 
 router.get('/all', usersController.getAllUsers)
 
-router.get('/supers', usersController.getAllSupers)
+router.post('/create/:id', usersController.createUser)
 
-router.get('/staff', usersController.getAllStaff)
-
-router.get('/module_leaders', usersController.getAllModuleLeaders)
-
-router.get('/teachers', usersController.getAllTeachers)
-
-router.get('/assistants', usersController.getAllAssistants)
-
-router.get('/students', usersController.getAllStudents)
-
-router.get('/guests', usersController.getAllGuests)
-
-router.post('/create', usersController.createUser)
-
-router.post('/edit', usersController.editUser)
+router.post('/edit/:id', usersController.editUser)
 
 router.post('/login', usersController.login)
 

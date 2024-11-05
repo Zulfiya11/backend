@@ -2,15 +2,18 @@ const Assignment_levels = require('../models/assignment_levels')
 
 
 exports.createAssignmentLevel = async(req, res) => {
-
-    await Assignment_levels.query().insert({
-        assignment_id: req.params.id,
-        level_id: req.body.level_id,
-        unit_id: req.body.unit_id,
-        quantity: req.body.quantity
-    })
-        
-     res.status(201).json({ success: true, msg: 'Assignment Level yaratildi' })
+    try {
+        await Assignment_levels.query().insert({
+            assignment_id: req.params.id,
+            level_id: req.body.level_id,
+            unit_id: req.body.unit_id,
+            quantity: req.body.quantity
+        })
+        res.status(201).json({ success: true, msg: 'Assignment Level yaratildi' })
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({success: false, error: error.message})
+    }
 }
 
 exports.getAllAssignmentLevels = async (req, res) => {
@@ -25,27 +28,35 @@ exports.getAllAssignmentLevels = async (req, res) => {
                 'units.name AS unit_name',
                 'question_levels.name AS level_name'
             );
-
         return res.json({ success: true, assignment_levels: assignment_levels });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ success: false, message: 'Internal Server Error' });
+        return res.status(500).json({ success: false, error: error.message });
     }
 };
 
 
 exports.editAssignmentLevel = async(req,res) => {
-    await Assignment_levels.query().where('id', req.params.id).update({
-        level_id: req.body.level_id,
-        unit_id: req.body.unit_id,
-        quantity: req.body.quantity
-    })
-    return res.status(200).json({success:true, msg: "Assignment Level tahrirlandi"})
+    try {
+        await Assignment_levels.query().where('id', req.params.id).update({
+            level_id: req.body.level_id,
+            unit_id: req.body.unit_id,
+            quantity: req.body.quantity
+        })
+        return res.status(200).json({success:true, msg: "Assignment Level tahrirlandi"})
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({success: false, error: error.message})
+    }
 
 }
 
 exports.deleteAssignmentLevel = async(req,res) => {
-    await Assignment_levels.query().where('id', req.params.id).delete()
-
-    return res.status(200).json({success:true, msg: "Assignment Level o'chirildi"})
+    try {
+        await Assignment_levels.query().where('id', req.params.id).delete()
+        return res.status(200).json({success:true, msg: "Assignment Level o'chirildi"})
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({success: false, error: error.message})
+    }
 }

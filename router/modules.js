@@ -9,8 +9,6 @@ router.get('/all/:id', modulesController.getAllModules)
 
 router.post('/edit/:id', modulesController.editModule)
 
-router.post('/delete/:id', modulesController.deleteModule)
-
 
 module.exports = router
 

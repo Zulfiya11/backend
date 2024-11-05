@@ -9,8 +9,6 @@ router.get('/all/:id', assignmentTypesController.getAllAssignmentTypes)
 
 router.post('/edit/:id', assignmentTypesController.editAssignmentType)
 
-router.post('/delete/:id', assignmentTypesController.deleteAssignmentType)
-
 
 
 module.exports = router

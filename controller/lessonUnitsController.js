@@ -1,49 +1,65 @@
 const Lesson_units = require("../models/lesson_units");
 
 exports.createLessonUnit = async (req, res) => {
+  try {
+      req.body.selected_subjects.forEach(async element => {
 
-    req.body.selected_subjects.forEach(async element => {
-
-    await Lesson_units.query().insert({
-        lesson_id: req.body.lesson_id,
-        unit_id: element,
-        module_id: req.body.module_id
+      await Lesson_units.query().insert({
+          lesson_id: req.body.lesson_id,
+          unit_id: element,
+          module_id: req.body.module_id
+        });
       });
-});
-  return res.status(201).json({ success: true, msg: "Lesson Unit yaratildi" });
+      return res.status(201).json({ success: true, msg: "Lesson Unit yaratildi" });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({success: false, error: error.message})
+  }
 };
 
 exports.getAllLessonUnits = async (req, res) => {
-  const knex = await Lesson_units.knex();
+  try {
+    const lesson_units = await Lesson_units.query()
+        .join("lessons", "lessons.id", "lesson_units.lesson_id")
+        .join("units", "units.id", "lesson_units.unit_id")
+        .where("lesson_units.module_id", req.params.id)
+        .select(
+            "lesson_units.id AS id",
+            "lesson_units.lesson_id",
+            "lesson_units.unit_id",
+            "lessons.name AS lesson_name",
+            "units.name AS unit_name"
+        );
 
-  const data = await knex.raw(`
-SELECT
-    lu.id,
-    l.name AS lesson_name,
-    u.name AS unit_name,
-    lu.module_id,
-    lu.created
-FROM
-    lesson_units lu
-JOIN
-    lessons l ON lu.lesson_id = l.id
-JOIN
-    units u ON lu.unit_id = u.id;`);
-
-  return res.json({ success: true, lesson_units: data[0] });
+    return res.json({ success: true, lesson_units: lesson_units });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({success: false, error: error.message})
+  }
 };
 
+
+
 exports.editLessonUnit = async (req, res) => {
-  await Lesson_units.query().where("id", req.params.id).update({
-    lesson_id: req.body.lesson_id,
-    unit_id: req.body.unit_id,
-  });
-  return res.status(200).json({success:true, msg: "Lesson Unit tahrirlandi"})
+  try {
+    await Lesson_units.query().where("id", req.params.id).update({
+      lesson_id: req.body.lesson_id,
+      unit_id: req.body.unit_id,
+    });
+    return res.status(200).json({success:true, msg: "Lesson Unit tahrirlandi"})
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({success: false, error: error.message})
+  }
 
 };
 
 exports.deleteLessonUnit = async (req, res) => {
-  await Lesson_units.query().where("id", req.params.id).delete();
-  return res.status(200).json({success:true, msg: "Lesson Unit o'chirildi"})
-
+  try {
+    await Lesson_units.query().where("id", req.params.id).delete();
+    return res.status(200).json({success:true, msg: "Lesson Unit o'chirildi"})
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({success: false, error: error.message})
+  }
 };

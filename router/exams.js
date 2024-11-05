@@ -4,8 +4,10 @@ const examsController = require('../controller/examsController')
 
 
 router.post('/create/:id', examsController.createExam)
-router.get('/allbystudent', examsController.getaAllExamsByStudent)
-router.post("/allquestions", examsController.getaAllQuestionsByExam);
+router.post("/allbygroup/:id", examsController.getAllExamsByGroup);
+router.post("/allforgroup/:id", examsController.getAllExamsResultsForGroup);
+router.get('/allbystudent', examsController.getAllExamsByStudent)
+router.post("/allquestions", examsController.getAllQuestionsByExam);
 router.post("/answers", examsController.answers);
 
 // router.get('/all', daysController.getaAllDays)

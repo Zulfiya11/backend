@@ -1,3 +1,3 @@
-const secret = 'kflgakdfhgkdfhalgl;fg;lhs;@$#&$(#^$(&(Qfsajlfjlgj;wghg'
+const secret = 'kflgakdfhgkdfhaasdfagflgl;fg;lhs;@$#gskdfjgsdjf;g;ajgasfadfdskg;&$(#^$(&(Qfsajlfjlgj;wghg'
 
 module.exports = {secret}

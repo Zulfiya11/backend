@@ -2,7 +2,6 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const userRouter = require('./router/users')
-const applicationRouter = require('./router/applications')
 const courseRouter = require('./router/courses')
 const moduleRouter = require('./router/modules')
 const assignmentTypeRouter = require('./router/assignmentTypes')
@@ -46,8 +45,6 @@ app.use('/modules', moduleRouter),
 app.use('/courses', courseRouter),
 
 app.use('/users', userRouter),
-
-app.use('/applications', applicationRouter),
 
 app.use('/subjects', unitRouter),
 

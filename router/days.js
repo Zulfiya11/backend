@@ -9,7 +9,3 @@ router.get('/all', daysController.getaAllDays)
 
 
 module.exports = router
-
-
-
-

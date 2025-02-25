@@ -5,7 +5,8 @@ exports.createLessonReportType = async(req, res) => {
         await Lesson_report_types.query().insert({
            name: req.body.name,
            weight: req.body.weight,
-           module_id: req.body.module_id
+            module_id: req.body.module_id,
+           status: "active"
         })
         return res.status(201).json({ success: true, msg: 'Lesson report type yaratildi' })
     } catch (error) {

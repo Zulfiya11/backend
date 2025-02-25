@@ -6,7 +6,8 @@ exports.createAssignment = async(req, res) => {
         const newCourse = await Assignments.query().insert({
             name: req.body.name,
             module_id: req.body.module_id,
-            assignment_type_id: req.body.assignment_type_id
+            assignment_type_id: req.body.assignment_type_id, 
+            status: "active"    
          })
          return res.status(201).json({ success: true, msg: 'Assignment type yaratildi' })
     } catch (error) {

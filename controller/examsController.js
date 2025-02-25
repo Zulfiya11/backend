@@ -12,16 +12,12 @@ const { group } = require("console");
 
 exports.createExam = async (req, res) => {
     try {
-        const assignments = await Assignments.query().where(
-            "id",
-            req.body.assignment_id
-        ).first();
     
         await Assignments_by_group.query().insert({
             group_id: req.params.id,
             assignment_id: req.body.assignment_id,
-            when: req.body.when,
-            assignment_type_id: assignments.assignment_type_id
+            // when: req.body.when,
+            assignment_type_id: req.body.assignment_type_id
         });
         
         
@@ -42,6 +38,8 @@ exports.createExam = async (req, res) => {
                 await Assignments_by_groupstudent.query().insert({
                     group_student_id: group_student[i].id,
                     assignment_id: req.body.assignment_id,
+                    assignment_type_id: req.body.assignment_type_id,
+                    module_id: req.body.module_id,
                     user_id: user_id.user_id,
                     group_id: req.params.id,
                     status: "not completed",
@@ -62,7 +60,7 @@ exports.createExam = async (req, res) => {
                         question_id: questions[random].id,
                         assignment_id: req.body.assignment_id,
                         group_student_id: group_student[i].id,
-                        when: req.body.when,
+                        // when: req.body.when,
                         user_id: user_id.user_id,
                         assignment_by_groupstudent_id: newAssignmentByStudent.id,
                         group_id: req.params.id,
@@ -79,28 +77,6 @@ exports.createExam = async (req, res) => {
     }
 };
 
-exports.getAllExamsByGroup = async (req, res) => {
-    try {
-        const exams = await Assignments_by_group.query()
-            .where("group_id", req.params.id)
-            .andWhere("assignments_by_group.assignment_type_id", req.body.assignment_type_id)
-            .join(
-                "assignments",
-                "assignments_by_group.assignment_id",
-                "assignments.id"
-            )
-            .join("groups", "assignments_by_group.group_id", "groups.id")
-            .select(
-                "assignments_by_group.*",
-                "groups.name as group_name",
-                "assignments.name as assignment_name"
-            );
-        return res.status(200).json({ success: true, exams: exams });
-    } catch (error) {
-        console.log(error);
-        return res.status(400).json({success: false, error: error.message})
-    }
-};
 
 exports.getAllExamsResultsForGroup = async (req, res) => {
     try {
@@ -124,37 +100,150 @@ exports.getAllExamsResultsForGroup = async (req, res) => {
     }
 };
 
-exports.getAllExamsByStudent = async (req, res) => {
+exports.getAllExamsByStudentByModule = async (req, res) => {
     try {
+        // Check for the Authorization header
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             return res
                 .status(401)
-                .json({ success: false, message: "Unauthorized" });
+                .json({
+                    success: false,
+                    message: "Unauthorized: Missing or invalid token",
+                });
         }
+
+        // Extract and verify the token
         const token = authHeader.split(" ")[1];
         const decodedToken = jwt.verify(token, secret);
         const studentId = decodedToken.id;
+
+        // Fetch exams from the database
         const exams = await Assignments_by_groupstudent.query()
-            .where("user_id", studentId)
-            .andWhere('assignments_by_groupstudent.status', "not completed")
+            .where("assignments_by_groupstudent.user_id", studentId)
+            .andWhere("assignments_by_groupstudent.module_id", req.params.id)
+            .andWhere("assignments_by_groupstudent.status", "not completed")
             .join(
                 "assignments",
                 "assignments_by_groupstudent.assignment_id",
                 "assignments.id"
             )
-            .join("groups", "assignments_by_groupstudent.group_id", "groups.id")
+            .join(
+                "assignment_types",
+                "assignments.assignment_type_id",
+                "assignment_types.id"
+            )
             .select(
-                "assignments_by_groupstudent.*",
-                "groups.name as group_name",
-                "assignments.name as assignment_name"
+                "assignments_by_groupstudent.id as assignment_by_groupstudent_id",
+                "assignments.name as assignment_name",
+                "assignment_types.name as assignment_type_name"
             );
-        return res.status(200).json({ success: true, exams: exams });
+
+        // Return the result
+        return res.status(200).json({ success: true, exams });
     } catch (error) {
-        console.log(error);
-        return res.status(400).json({success: false, error: error.message})
+        console.error("Error in getAllExamsByStudentByModule:", error);
+        return res.status(400).json({ success: false, error: error.message });
     }
 };
+
+exports.getAllExamsByStudentByModuleOnlyCompleted = async (req, res) => {
+    try {
+        // Check for the Authorization header
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized: Missing or invalid token",
+            });
+        }
+
+        // Extract and verify the token
+        const token = authHeader.split(" ")[1];
+        const decodedToken = jwt.verify(token, secret);
+        const studentId = decodedToken.id;
+
+        // Fetch all assignments in the module with the specified type
+        const assignments = await Assignments.query()
+            .where("assignments.module_id", req.params.id) // Qualify module_id
+            .andWhere(
+                "assignments.assignment_type_id",
+                req.body.assignment_type_id
+            )
+            .join(
+                "assignment_types",
+                "assignments.assignment_type_id",
+                "assignment_types.id"
+            )
+            .select(
+                "assignments.*",
+                "assignment_types.name as assignment_type_name"
+            );
+
+        // Fetch completed exams taken by the student
+        const completedExams = await Assignments_by_groupstudent.query()
+            .where("assignments_by_groupstudent.user_id", studentId)
+            .andWhere("assignments_by_groupstudent.module_id", req.params.id) // Qualify module_id
+            .andWhere(
+                "assignments_by_groupstudent.assignment_type_id",
+                req.body.assignment_type_id
+            )
+            .andWhere("assignments_by_groupstudent.status", "completed")
+            .join(
+                "assignments",
+                "assignments_by_groupstudent.assignment_id",
+                "assignments.id"
+            )
+            .join(
+                "assignment_types",
+                "assignments.assignment_type_id",
+                "assignment_types.id"
+            )
+            .select(
+                "assignments_by_groupstudent.assignment_id",
+                "assignments_by_groupstudent.id as assignment_by_groupstudent_id",
+                "assignments_by_groupstudent.result", // Include the result column
+                "assignments.name as assignment_name",
+                "assignment_types.name as assignment_type_name"
+            );
+
+        // Map completed exams by assignment ID for quick lookup
+        const completedExamsMap = new Map(
+            completedExams.map((exam) => [exam.assignment_id, exam])
+        );
+
+        // Align all assignments with the student's completed exams
+        const result = assignments.map((assignment) => {
+            const completedExam = completedExamsMap.get(assignment.id);
+            if (completedExam) {
+                return {
+                    assignment_by_groupstudent_id: completedExam.assignment_by_groupstudent_id,
+                    assignment_id: assignment.id,
+                    assignment_name: assignment.name,
+                    assignment_type_name: completedExam.assignment_type_name,
+                    status: "completed",
+                    result: completedExam.result, // Include the result in the response
+                };
+            } else {
+                return {
+                    assignment_id: assignment.id,
+                    assignment_name: assignment.name,
+                    assignment_type_name: assignment.assignment_type_name, // Use correct assignment type name
+                    status: "not taken yet",
+                    result: null, // No result if the assignment is not taken
+                };
+            }
+        });
+
+        // Return the result
+        return res.status(200).json({ success: true, exams: result });
+    } catch (error) {
+        console.error("Error in getAllExamsByStudentByModule:", error);
+        return res.status(400).json({ success: false, error: error.message });
+    }
+};
+    
+
 
 exports.getAllQuestionsByExam = async (req, res) => {
     try {
@@ -166,7 +255,7 @@ exports.getAllQuestionsByExam = async (req, res) => {
             .where("user_id", studentId)
             .andWhere(
                 "assignment_by_groupstudent_id",
-                req.body.assignment_by_groupstudent_id
+                req.params.id
             )
             .join("questions", "exams.question_id", "questions.id")
             .select("exams.*", "questions.question as question");
@@ -202,14 +291,15 @@ exports.answers = async (req, res) => {
                     )
                     .andWhere("question_id", req.body.answers[i].question_id)
                     .update({
-                        answer: req.body.answers[i].answer,
+                        option_id: req.body.answers[i].answer,
                     });
                 const trueAnswer = await Options.query()
                     .where("question_id", req.body.answers[i].question_id)
                     .andWhere("isRight", "right")
-                    .select("option")
+                    .select("id", "option")
                     .first();
-                if (req.body.answers[i].answer === trueAnswer.option) {
+                
+                if (req.body.answers[i].answer === trueAnswer.id) {
                     await Exams.query()
                         .where("user_id", studentId)
                         .andWhere(
@@ -254,3 +344,103 @@ exports.answers = async (req, res) => {
         return res.status(400).json({success: false, error: error.message})
     }
 };
+
+exports.getAnswers = async (req, res) => {
+    try {
+        // Extract the Authorization header
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized: Missing or invalid token",
+            });
+        }
+
+        // Extract and verify the token
+        const token = authHeader.split(" ")[1];
+        const decodedToken = jwt.verify(token, secret);
+        const studentId = decodedToken.id;
+
+        // Query the database using proper joins to get all options for each question
+        const exams = await Exams.query()
+            .where("exams.user_id", studentId)
+            .andWhere("exams.assignment_by_groupstudent_id", req.params.id)
+            .join("options", "exams.question_id", "options.question_id") // Join with options based on question_id
+            .join("questions", "exams.question_id", "questions.id") // Join with the questions table
+            .select(
+                "exams.id as exam_id",
+                "exams.assignment_by_groupstudent_id",
+                "exams.assignment_id",
+                "exams.question_id",
+                "exams.option_id as student_option_id", // Option ID from exams table
+                "exams.isTrue",
+                "exams.created",
+                "options.option as answer", // Answer from options table (selected option)
+                "questions.question as question", // Question text from questions table
+                "options.id as option_id", // Option ID from options table
+                "options.option", // All options for the question
+                "options.isRight" // Whether this option is the correct one
+            )
+            .orderBy("options.id"); // Ensure options are ordered for each question
+
+        // Group options for each question to display them together
+        const groupedExams = exams.reduce((acc, exam) => {
+            const {
+                exam_id,
+                question,
+                option_id,
+                student_option_id,
+                answer,
+                isRight,
+                ...rest
+            } = exam;
+
+            // Initialize the exam record if not already created
+            if (!acc[exam_id]) {
+                acc[exam_id] = {
+                    ...rest,
+                    exam_id,
+                    question,
+                    options: [],
+                    selected_option_id: null, // Initialize selected_option_id as null
+                };
+            }
+
+            // Add each option to the options array
+            acc[exam_id].options.push({
+                option_id,
+                answer,
+                isRight, // Include isRight for each option
+            });
+
+            // Set selected_option_id once for each exam using the correct student_option_id
+            if (student_option_id && acc[exam_id].selected_option_id === null) {
+                // Set selected_option_id to the student_option_id (correct option selected by the student)
+                acc[exam_id].selected_option_id = student_option_id; // Use student_option_id
+                console.log("Set selected_option_id to:", student_option_id); // Log when we set selected_option_id
+            }
+
+            return acc;
+        }, {});
+
+        // Convert the grouped exams object back to an array
+        const result = Object.values(groupedExams);
+
+        // Return the results
+        return res.status(200).json({ success: true, data: result });
+    } catch (error) {
+        console.error("Error in getAnswers:", error);
+        return res.status(400).json({ success: false, error: error.message });
+    }
+};
+
+
+
+
+
+
+
+
+
+
+

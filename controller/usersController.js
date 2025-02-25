@@ -1,252 +1,330 @@
 const jwt = require("jsonwebtoken");
 const { secret } = require("../config/config");
 const Users = require("../models/users");
-const byscrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs");
 
-exports.getAllUsers = async (req, res) => {
+/**
+ * Helper function to verify JWT token
+ */
+const verifyToken = (req, res) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        return {
+            error: res
+                .status(401)
+                .json({
+                    success: false,
+                    message: "Unauthorized: No token provided",
+                }),
+        };
+    }
+
     try {
-        const user = await Users.query().select("*");
-        return res.json({ success: true, users: user });
+        const token = authHeader.split(" ")[1];
+        return { decoded: jwt.verify(token, secret) };
     } catch (error) {
-        console.log(error);
-        return res.status(400).json({success: false, error: error.message})
+        return {
+            error: res
+                .status(401)
+                .json({
+                    success: false,
+                    message: "Unauthorized: Invalid token",
+                }),
+        };
     }
 };
 
+/**
+ * Get all users
+ */
+exports.getAllUsers = async (req, res) => {
+    const { error } = verifyToken(req, res);
+    if (error) return;
+
+    try {
+        const users = await Users.query().select(
+            "id",
+            "name",
+            "surname",
+            "phone",
+            "role",
+            "access",
+            "date_of_birth"
+        );
+        return res.json({ success: true, users });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+/**
+ * Get all teachers
+ */
+exports.getAllTeachers = async (req, res) => {
+    const { error } = verifyToken(req, res);
+    if (error) return;
+
+    try {
+        const teachers = await Users.query()
+            .where("role", "teacher")
+            .select("id", "name", "surname");
+        return res.json({ success: true, teachers });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+/**
+ * Get all assistants
+ */
+exports.getAllAssistants = async (req, res) => {
+    const { error } = verifyToken(req, res);
+    if (error) return;
+
+    try {
+        const assistants = await Users.query()
+            .where("role", "assistant")
+            .select("id", "name", "surname");
+        return res.json({ success: true, assistants });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+/**
+ * Create a new user with a two-step verification process
+ */
 exports.createUser = async (req, res) => {
     try {
+        const {
+            step,
+            phone,
+            password,
+            name,
+            surname,
+            date_of_birth,
+            user_id,
+            code,
+        } = req.body;
 
-        await Users.query().where("id", req.params.id).update({
-            status: "accepted",
-            role: "guest",
-            access: "allowed",
-        });
-    
-        return res
-            .status(201)
-            .json({ success: true, msg: "Foydalanuvchi yaratildi" });
-    } catch (error) {
-        console.log(error);
-        return res.status(400).json({success: false, error: error.message})
-    }
-};
-
-exports.editUser = async (req, res) => {
-    try {
-        await Users.query().where("id", req.params.id).update({
-            phone: req.body.phone,
-            password: req.body.password,
-            name: req.body.name,
-            surname: req.body.surname,
-            date_of_birth: req.body.date_of_birth,
-            role: req.body.role,
-            access: req.body.access
-        });
-        return res.status(200).json({ success: true, msg: "User tahrirlandi" });
-    } catch (error) {
-        console.log(error);
-        return res.status(400).json({success: false, error: error.message})
-    }
-};
-
-
-exports.login = async (req, res) => {
-    try {
-        const student = await Users.query().where("phone", req.body.phone).first();
-        if (!student) {
-            return res
-                .status(404)
-                .json({ success: false, msg: "Foydalanuvchi topilmadi" });
-        }
-        const checkPassword = await byscrypt.compareSync(
-            req.body.password,
-            student.password
-        );
-        if (!checkPassword) {
-            return res.status(400).json({ success: false, msg: "Parol xato" });
-        }
-        const payload = {
-            id: student.id,
-        };
-        const token = jwt.sign(payload, secret, { expiresIn: "1h" });
-        await Users.query().where("phone", req.body.phone).update({
-            token: token,
-        });
-    
-        return res.status(200).json({ success: true, token: token });
-    } catch (error) {
-        console.log(error);
-        return res.status(400).json({success: false, error: error.message})
-    }
-};
-
-exports.forgotPassword = async (req, res) => {
-    try {
-        if (req.body.step == 1) {
-            const student = await Users.query()
-                .where("phone", req.body.phone)
+        if (step === 1) {
+            const existingUser = await Users.query()
+                .where("phone", phone)
                 .first();
-            if (!student) {
+            if (existingUser) {
                 return res
-                    .status(404)
-                    .json({ success: false, msg: "Foydalanuvchi topilmadi" });
-            }
-            const code = Math.floor(Math.random() * 10000);
-            await Users.query().where("phone", req.body.phone).update({
-                code: code,
-            });
-    
-            return res.status(200).json({ success: true, code: code });
-        }
-        if (req.body.step == 2) {
-            const student = await Users.query().where("phone", req.body.phone);
-            if (!student) {
-                return res
-                    .status(400)
-                    .json({ success: false, msg: "user-not-found" });
-            }
-    
-            if (student.code != null && student.code != req.body.code) {
-                return res.status(400).json({ success: false, msg: "code-fail" });
-            }
-    
-            return res
-                .status(200)
-                .json({ success: true, msg: "Parol ozgartirildi" });
-        }
-    } catch (error) {
-        console.log(error);
-        return res.status(400).json({success: false, error: error.message})
-    }
-};
-
-exports.me = async (req, res) => {
-    try {
-        const token = req.headers.authorization.split(" ")[1];
-        const decoded = jwt.verify(token, secret);
-        const user_id = decoded.id;
-
-        const user = await Users.query().where("id", user_id).first();
-
-        return res.status(200).json({ success: true, user });
-    } catch (err) {
-        console.error(err);
-        return res
-            .status(401)
-            .json({ success: false, message: "Invalid token" });
-    }
-};
-
-exports.getAllUserApplications = async (req, res) => {
-    try {
-        const applications = await Users.query()
-            .whereNotNull("status")
-            .select("*");
-        return res.json({ success: true, users: applications });
-    } catch (error) {
-        console.error("Error fetching user applications:", error);
-        return res
-            .status(500)
-            .json({
-                success: false,
-                message: "Failed to fetch user applications",
-                error: error.message,
-            });
-    }
-};
-
-exports.createUserApplication = async (req, res) => {
-    try {
-        if (req.body.step === 1) {
-            const student = await Users.query()
-                .where("phone", req.body.phone)
-                .first();
-            if (student) {
-                return res
-                    .status(404)
+                    .status(409)
                     .json({
                         success: false,
-                        msg: "Bunday raqamli foydalanuvchi mavjud",
+                        msg: "User with this phone number already exists",
                     });
             }
-            const code = Math.floor(Math.random() * 10000);
-            const salt = await byscrypt.genSalt(12);
-            const password = byscrypt.hashSync(req.body.password, salt);
+
+            const hashedPassword = await bcrypt.hash(password, 12);
+            const verificationCode = Math.floor(Math.random() * 10000);
+
             const user = await Users.query().insert({
-                phone: req.body.phone,
-                password: password,
-                name: req.body.name,
-                surname: req.body.surname,
-                date_of_birth: req.body.date_of_birth,
-                status: "verifying",
-                code: code,
+                phone,
+                password: hashedPassword,
+                name,
+                surname,
+                date_of_birth,
+                role: "guest",
+                code: verificationCode,
+                access: "pending",
             });
-            //code for sending sms here
+
+            // TODO: Add SMS sending logic here
+
             return res
                 .status(200)
-                .json({ success: true, id: user.id, phone: user.phone });
+                .json({
+                    success: true,
+                    user_id: user.id,
+                    user_phone: user.phone,
+                    msg: "Enter the code sent via SMS",
+                });
         }
-        if (req.body.step === 2) {
-            const user = await Users.query()
-                .where("phone", req.body.phone)
-                .first();
 
-            if (req.body.code !== user.code) {
+        if (step === 2) {
+            const user = await Users.query().where("id", user_id).first();
+            if (!user || user.phone !== phone || user.code !== code) {
                 return res
                     .status(400)
-                    .json({ success: false, msg: "code fail" });
+                    .json({
+                        success: false,
+                        msg: "Invalid verification details",
+                    });
             }
 
-            await Users.query().where("id", req.body.id).update({
-                status: "pending",
-                code: null,
-            });
-
+            await Users.query()
+                .where("id", user_id)
+                .update({ access: "allowed", code: null });
             return res
                 .status(201)
-                .json({ success: true, msg: "Foydalanuvchi royhatdan otdi" });
+                .json({ success: true, msg: "User successfully registered" });
         }
-    } catch (error) {
-        console.log(error);
-        return res.status(400).json({ success: false, error: error.message });
-    }
-};
-exports.editUserApplication = async (req, res) => {
-    try {
-        await Users.query().where("id", req.params.id).update({
-            phone: req.body.phone,
-            password: req.body.password,
-            name: req.body.name,
-            surname: req.body.surname,
-            date_of_birth: req.body.date_of_birth,
-            role: req.body.role,
-            status: req.body.status,
-        });
+
         return res
-            .status(200)
-            .json({
-                success: true,
-                msg: "Foydalanuvchi ma'lumotlari tahrirlandi",
-            });
+            .status(400)
+            .json({ success: false, msg: "Invalid step value" });
     } catch (error) {
-        console.log(error);
-        return res.status(400).json({ success: false, error: error.message });
+        console.error(error);
+        return res.status(500).json({ success: false, error: error.message });
     }
 };
 
-exports.denyUserApplication = async (req, res) => {
+/**
+ * Edit user details
+ */
+exports.editUser = async (req, res) => {
+    const { error } = verifyToken(req, res);
+    if (error) return;
+
     try {
-        await Users.query().where("id", req.params.id).update({
-            status: "denied",
-        });
+        const { id } = req.params;
+        const { phone, password, name, surname, date_of_birth, role, access } =
+            req.body;
+
+        const updateData = {
+            phone,
+            name,
+            surname,
+            date_of_birth,
+            role,
+            access,
+        };
+        if (password) {
+            updateData.password = await bcrypt.hash(password, 10);
+        }
+
+        await Users.query().where("id", id).update(updateData);
         return res
             .status(200)
-            .json({
-                success: true,
-                msg: "Foydalanuvchi arizasi qabul qilinmadi",
-            });
+            .json({ success: true, message: "User updated successfully" });
     } catch (error) {
-        console.log(error);
-        return res.status(400).json({ success: false, error: error.message });
+        console.error("Edit User Error:", error);
+        return res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+/**
+ * User login
+ */
+exports.login = async (req, res) => {
+    try {
+        const { phone, password } = req.body;
+
+        const user = await Users.query()
+            .select("id", "password", "access")
+            .where("phone", phone)
+            .first();
+        if (!user) {
+            return res
+                .status(404)
+                .json({ success: false, msg: "User not found" });
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res
+                .status(400)
+                .json({ success: false, msg: "Incorrect password" });
+        }
+
+        if (user.access === "restricted") {
+            return res
+                .status(403)
+                .json({ success: false, msg: "User access is restricted" });
+        }
+
+        const token = jwt.sign({ id: user.id }, secret, { expiresIn: "100d" });
+        await Users.query().where("id", user.id).update({ token });
+
+        return res.status(200).json({ success: true, token });
+    } catch (error) {
+        console.error("Login Error:", error);
+        return res.status(500).json({ success: false, error: error.message });
+    }
+};
+
+/**
+ * Get logged-in user's information
+ */
+exports.me = async (req, res) => {
+    const { error, decoded } = verifyToken(req, res);
+    if (error) return;
+
+    try {
+        const user = await Users.query()
+            .select(
+                "id",
+                "phone",
+                "name",
+                "surname",
+                "date_of_birth",
+                "role",
+                "access"
+            )
+            .where("id", decoded.id)
+            .first();
+
+        if (!user) {
+            return res
+                .status(404)
+                .json({ success: false, message: "User not found" });
+        }
+
+        return res.status(200).json({ success: true, user });
+    } catch (error) {
+        console.error("User Fetch Error:", error);
+        return res
+            .status(500)
+            .json({ success: false, message: "Internal Server Error" });
+    }
+};
+
+/**
+ * Forgot Password
+ */
+exports.forgotPassword = async (req, res) => {
+    try {
+        const { step, phone, code } = req.body;
+
+        const user = await Users.query().where("phone", phone).first();
+        if (!user) {
+            return res
+                .status(404)
+                .json({ success: false, msg: "User not found" });
+        }
+
+        if (step === 1) {
+            const verificationCode = Math.floor(Math.random() * 10000);
+            await Users.query()
+                .where("phone", phone)
+                .update({ code: verificationCode });
+
+            return res
+                .status(200)
+                .json({
+                    success: true,
+                    msg: "Verification code sent",
+                    code: verificationCode,
+                });
+        }
+
+        if (step === 2 && user.code === code) {
+            return res
+                .status(200)
+                .json({ success: true, msg: "Code verified. Reset password" });
+        }
+
+        return res.status(400).json({ success: false, msg: "Invalid code" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, error: error.message });
     }
 };

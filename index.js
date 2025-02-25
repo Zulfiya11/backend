@@ -13,7 +13,7 @@ const lessonUnitRouter = require('./router/lessonUnits')
 const assignmentRouter = require('./router/assignments')
 const questionRouter = require('./router/questions')
 const groupEnrolementRouter = require('./router/groupEnrolements')
-const groupEnrolementByStudentRouter = require('./router/groupEnrolementByStudent')
+const moduleEnrolementByStudentRouter = require('./router/moduleEnrolementByStudent')
 const groupRouter = require('./router/groups')
 const groupStudentRouter = require('./router/groupStudents')
 const groupLessonRouter = require('./router/groupLessons')
@@ -23,28 +23,26 @@ const lessonReportByUserRouter = require('./router/lessonReportByUser')
 const groupAttendanceRouter = require('./router/groupAttendance')
 const questionLevelRouter = require('./router/questionLevels')
 const assignmentLevelRouter = require('./router/assignmentLevels')
+const studentModulesRouter = require('./router/studentModules')
 const examRouter = require('./router/exams')
-
-
-
-
 
 const cors = require('cors')
 
-// parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cors())
 // parse application/json
 app.use(bodyParser.json())
 
 
-app.use('/assignmenttypes', assignmentTypeRouter),
-
-app.use('/modules', moduleRouter),
+app.use('/users', userRouter),
 
 app.use('/courses', courseRouter),
 
-app.use('/users', userRouter),
+app.use('/modules', moduleRouter),
+
+app.use('/studentmodules', studentModulesRouter),
+
+app.use('/assignmenttypes', assignmentTypeRouter),
 
 app.use('/subjects', unitRouter),
 
@@ -62,7 +60,7 @@ app.use('/questions', questionRouter),
 
 app.use('/groupenrolements', groupEnrolementRouter),
 
-app.use('/groupenrolementsbystudent', groupEnrolementByStudentRouter),
+app.use('/moduleenrolementsbystudent', moduleEnrolementByStudentRouter),
 
 app.use('/groups', groupRouter),
 
@@ -83,10 +81,6 @@ app.use('/questionlevels', questionLevelRouter),
 app.use('/assignmentlevels', assignmentLevelRouter),
 
 app.use('/exams', examRouter)
-
-
-
-
 
 app.listen(3000, () => {
     console.log('server is running');

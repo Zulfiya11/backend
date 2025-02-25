@@ -5,7 +5,7 @@ const coursesController = require('../controller/coursesController')
 
 router.post('/create', coursesController.createCourse)
 
-router.get('/all', coursesController.getaAllCourses)
+router.get('/all', coursesController.getAllCourses)
 
 router.post('/edit/:id', coursesController.editCourse)
 

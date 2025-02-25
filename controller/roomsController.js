@@ -30,6 +30,7 @@ exports.getAllRooms = async(req,res) => {
     }
 }
 
+
 exports.editRoom = async (req, res) => {
     try {
         await Rooms.query().where('id', req.params.id).update({

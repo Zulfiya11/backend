@@ -1,6 +1,7 @@
 const Group_lessons = require('../models/group_lessons')
 
 
+
 exports.getAllGroupLessons = async(req,res) => {
     try {
         const group_lessons = await Group_lessons.query().where('group_id', req.params.id).join('lessons', 'group_lessons.lesson_id', 'lessons.id').select('lessons.name AS lesson_name', 'group_lessons.*', )

@@ -4,7 +4,11 @@ const usersController = require('../controller/usersController')
 
 router.get('/all', usersController.getAllUsers)
 
-router.post('/create/:id', usersController.createUser)
+router.get("/all/teachers", usersController.getAllTeachers);
+
+router.get("/all/assistants", usersController.getAllAssistants);
+
+router.post('/create', usersController.createUser)
 
 router.post('/edit/:id', usersController.editUser)
 
@@ -14,13 +18,6 @@ router.post('/forgotpassword',usersController.forgotPassword)
 
 router.get("/me", usersController.me);
 
-router.post("/application/create", usersController.createUserApplication);
-
-router.get("/application/all", usersController.getAllUserApplications);
-
-router.post("/application/edit/:id", usersController.editUserApplication);
-
-router.post("/application/deny/:id", usersController.denyUserApplication);
 
 
 

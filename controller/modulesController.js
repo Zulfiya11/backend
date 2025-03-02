@@ -64,13 +64,25 @@ exports.getAllModules = async (req, res) => {
 exports.editModule = async (req, res) => {
     try {
         verifyToken(req);
+        
+        const module = await Modules.query()
+            .where("modules.course_id", req.body.course_id)
+        
+        
+        for (let i = 0; i < module.length; i++) {
+            if (module[i].order === req.body.order) {
+                return res
+                    .status(400)
+                    .json({ success: false, msg: "Order already exists" });
+            }
+        }       
+
 
         const updatedRows = await Modules.query()
             .where("id", req.params.id)
             .update({
                 name: req.body.name,
                 max_students: req.body.max_students,
-                length: req.body.length,
                 status: req.body.status,
                 order: req.body.order,
                 isCore: req.body.isCore,

@@ -7,6 +7,8 @@ router.post('/create', grouptsController.createGroup)
 
 router.get('/all', grouptsController.getAllGroups)
 
+router.get("/all/byteacherorassisstant", grouptsController.getAllGroupsByTeacherOrAssistant);
+
 router.post('/edit/:id', grouptsController.editGroup)
 
 router.post('/delete/:id', grouptsController.deleteGroup)

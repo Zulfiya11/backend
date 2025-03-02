@@ -1,11 +1,8 @@
-const jwt = require("jsonwebtoken");
-const { secret } = require("../config/config");
 const Users = require("../models/users");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { secret } = require("../config/config");
 
-/**
- * Helper function to verify JWT token
- */
 const verifyToken = (req, res) => {
     const authHeader = req.headers.authorization;
     if (!authHeader) {

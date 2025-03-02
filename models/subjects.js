@@ -3,9 +3,9 @@ const knex = require("../settings/db");
 
 Model.knex(knex);
 
-class Units extends Model {
+class Subjects extends Model {
   static get tableName(){
-    return "units"
+    return "subjects";
   }
 }
-module.exports = Units;
+module.exports = Subjects;

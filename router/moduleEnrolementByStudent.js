@@ -3,7 +3,6 @@ const moduleEnrolementByStudentController = require('../controller/moduleEnrolem
 
 
 
-router.post('/create', moduleEnrolementByStudentController.createModuleEnrolementByStudent)
 
 router.delete(
     "/delete/:id",
@@ -11,9 +10,6 @@ router.delete(
 );
 
 
-router.post("/createbyadmin/:id", moduleEnrolementByStudentController.createModuleEnrolementByStudentByAdmin);
-
-router.get("/all", moduleEnrolementByStudentController.getAllModuleEnrolementsByStudent);
 
 
 

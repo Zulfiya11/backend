@@ -7,7 +7,7 @@ router.post('/create', lessonUnitsController.createLessonUnit)
 
 router.get('/all/:id', lessonUnitsController.getAllLessonUnits)
 
-router.post('/edit/:id', lessonUnitsController.editLessonUnit)
+// router.post('/edit/:id', lessonUnitsController.editLessonUnit)
 
 router.post('/delete/:id', lessonUnitsController.deleteLessonUnit)
 

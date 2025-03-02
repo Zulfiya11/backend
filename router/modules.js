@@ -7,10 +7,6 @@ router.get("/all/:id", modulesController.getAllModules);
 
 router.post("/edit/:id", modulesController.editModule);
 
-// router.get(
-//     "/all/student/:id",
-//     modulesController.getAllModulesByStudentForRegister
-// );
 
 // router.get("/allByStudent", modulesController.getAllModulesByStudent);
 

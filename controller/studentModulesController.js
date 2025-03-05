@@ -258,31 +258,3 @@ exports.deleteStudentModuleByAdmin = async (req, res) => {
         return res.status(400).json({ success: false, error: error.message });
     }
 };
-
-exports.getAllModulesByStudent = async (req, res) => {
-    try {
-        const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return res
-                .status(401)
-                .json({ success: false, message: "Unauthorized" });
-        }
-        const token = authHeader.split(" ")[1];
-        const decodedToken = jwt.verify(token, secret);
-        const studentId = decodedToken.id;
-
-        const modulesbystudent = await Student_modules.query()
-            .where("user_id", studentId)
-            .join("modules", "student_modules.module_id", "modules.id")
-            .select(
-                "student_modules.isGraduated",
-                "student_modules.module_id",
-                "modules.*"
-            );
-
-        return res.json({ success: true, modules: modulesbystudent });
-    } catch (error) {
-        console.log(error);
-        return res.status(400).json({ success: false, error: error.message });
-    }
-};

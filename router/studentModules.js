@@ -13,6 +13,4 @@ router.post("/create/byadmin/:id", studentModulesController.createStudentModuleB
 
 router.delete("/delete/:id", studentModulesController.deleteStudentModuleByAdmin);
 
-// router.get("/allByStudent", studentModulesController.getAllModulesByStudent);
-
 module.exports = router;

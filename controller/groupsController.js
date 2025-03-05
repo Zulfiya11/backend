@@ -1,6 +1,4 @@
 const Groups = require("../models/groups");
-const Group_enrolements = require("../models/group_enrolements");
-const Module_enrolements_by_student = require("../models/module_enrolements_by_student");
 const Group_student = require("../models/group_student");
 const Group_lessons = require("../models/group_lessons");
 const Group_days = require("../models/group_days");
@@ -64,6 +62,8 @@ exports.createGroup = [
                 status: "active",
             });
 
+
+
             const groupname = `${module.id}${course.name}${newGroup.id}`;
 
             await Groups.query()
@@ -76,16 +76,11 @@ exports.createGroup = [
                     user_id: student.user_id,
                 });
 
-                await Student_modules.query().insert({
-                    user_id: student.user_id,
-                    module_id: req.body.module_id,
-                    course_id: req.body.course_id,
-                    isGraduated: "not graduated",
-                });
-
-                await Module_enrolements_by_student.query()
+                await Student_modules.query()
                     .where("id", student.enrolement_id)
-                    .delete();
+                    .update({
+                    isGraduated: "studying",
+                });
             }
 
             return res
@@ -174,88 +169,6 @@ exports.getAllGroupsByTeacherOrAssistant = [
                 );
 
             return res.json({ success: true, groups });
-        } catch (error) {
-            console.error(error);
-            return res
-                .status(400)
-                .json({ success: false, error: error.message });
-        }
-    },
-];
-
-exports.editGroup = [
-    verifyToken,
-    async (req, res) => {
-        try {
-            const group = await Groups.query()
-                .where("id", req.params.id)
-                .first();
-            if (!group) {
-                return res
-                    .status(404)
-                    .json({ success: false, msg: "Group not found" });
-            }
-
-            await Groups.query().where("id", req.params.id).update({
-                name: req.body.name,
-                teacher_id: req.body.teacher_id,
-                assistant_id: req.body.assistant_id,
-                starting_date: req.body.starting_date,
-                course_id: req.body.course_id,
-                module_id: req.body.module_id,
-                day_id: req.body.day_id,
-                time: req.body.time,
-                room_id: req.body.room_id,
-                starting_date: req.body.starting_date,
-            });
-
-            return res
-                .status(200)
-                .json({ success: true, msg: "Group updated successfully" });
-        } catch (error) {
-            console.error(error);
-            return res
-                .status(400)
-                .json({ success: false, error: error.message });
-        }
-    },
-];
-
-exports.deleteGroup = [
-    verifyToken,
-    async (req, res) => {
-        try {
-            await Group_days.query().where("group_id", req.params.id).delete();
-            await Group_lessons.query()
-                .where("group_id", req.params.id)
-                .delete();
-            await Group_student.query()
-                .where("group_id", req.params.id)
-                .delete();
-            await Groups.query().where("id", req.params.id).delete();
-
-            return res
-                .status(200)
-                .json({ success: true, msg: "Group deleted successfully" });
-        } catch (error) {
-            console.error(error);
-            return res
-                .status(400)
-                .json({ success: false, error: error.message });
-        }
-    },
-];
-
-exports.finishGroup = [
-    verifyToken,
-    async (req, res) => {
-        try {
-            await Groups.query()
-                .where("id", req.params.id)
-                .update({ status: "finished" });
-            return res
-                .status(200)
-                .json({ success: true, msg: "Group finished successfully" });
         } catch (error) {
             console.error(error);
             return res

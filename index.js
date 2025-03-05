@@ -12,12 +12,9 @@ const roomRouter = require('./router/rooms')
 const lessonUnitRouter = require('./router/lessonUnits')
 const assignmentRouter = require('./router/assignments')
 const questionRouter = require('./router/questions')
-const groupEnrolementRouter = require('./router/groupEnrolements')
 const groupRouter = require('./router/groups')
 const groupStudentRouter = require('./router/groupStudents')
 const groupLessonRouter = require('./router/groupLessons')
-const dayRouter = require('./router/days')
-const groupEnrolementDayRouter = require('./router/groupEnrolementDays')
 const lessonReportByUserRouter = require('./router/lessonReportByUser')
 const groupAttendanceRouter = require('./router/groupAttendance')
 const questionLevelRouter = require('./router/questionLevels')
@@ -57,17 +54,11 @@ app.use('/assignments', assignmentRouter),
 
 app.use('/questions', questionRouter),
 
-app.use('/groupenrolements', groupEnrolementRouter),
-
 app.use('/groups', groupRouter),
 
 app.use('/groupstudents', groupStudentRouter),
 
 app.use('/grouplessons', groupLessonRouter),
-
-app.use('/days', dayRouter),
-
-app.use('/groupenrolementdays', groupEnrolementDayRouter),
 
 app.use('/lessonreportsbyuser', lessonReportByUserRouter),
 

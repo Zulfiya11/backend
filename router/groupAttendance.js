@@ -9,6 +9,8 @@ router.get('/all/:id', groupAttendanceController.getAllGroupAttendance)
 
 router.get('/all/bylesson/:id', groupAttendanceController.getAllGroupAttendanceByLesson)
 
+router.post('/edit', groupAttendanceController.editGroupAttendance)
+
 
 
 module.exports = router

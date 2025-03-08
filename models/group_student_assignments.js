@@ -3,9 +3,9 @@ const knex = require("../settings/db");
 
 Model.knex(knex);
 
-class Exams extends Model {
+class Group_student_assignments extends Model {
   static get tableName(){
-    return "exams"
+    return "group_student_assignments"
   }
 }
-module.exports = Exams;
+module.exports = Group_student_assignments;

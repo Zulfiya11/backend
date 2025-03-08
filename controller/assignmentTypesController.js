@@ -51,9 +51,12 @@ exports.createAssignmentType = [
 ];
 
 exports.getAllAssignmentTypes = [
+    
     verifyToken,
     async (req, res) => {
         try {
+            console.log(1);
+            
             const assignmentTypes = await AssignmentTypes.query()
                 .where("assignment_types.module_id", req.params.id)
                 .leftJoin(

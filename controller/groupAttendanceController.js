@@ -170,5 +170,26 @@ exports.getAllGroupAttendanceByLesson = async (req, res) => {
     }
 };
 
+exports.editGroupAttendance = async (req, res) => {
+    try {
+        verifyToken(req);
+
+        for (let i = 0; i < req.body.group_attendance.length; i++) {
+            await Group_attendance.query()
+                .where("id", req.body.group_attendance[i].id)
+                .update({
+                    isAttended: req.body.group_attendance[i].isAttended,
+                    comment: req.body.group_attendance[i].comment,
+                });
+        }
+        return res
+            .status(200)
+            .json({ success: true, msg: "Group Attendance tahrirlandi" });
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ success: false, error: error.message });
+    }
+};
+
 
 

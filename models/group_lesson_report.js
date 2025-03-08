@@ -3,9 +3,9 @@ const knex = require("../settings/db");
 
 Model.knex(knex);
 
-class Group_days extends Model {
+class Group_lesson_report extends Model {
   static get tableName(){
-    return "group_days"
+    return "group_lesson_report"
   }
 }
-module.exports = Group_days;
+module.exports = Group_lesson_report;

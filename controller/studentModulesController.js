@@ -3,10 +3,38 @@ const Student_modules = require("../models/student_modules");
 const jwt = require("jsonwebtoken");
 const { secret } = require("../config/config");
 const Group_student = require("../models/group_student");
+const { log } = require("console");
 
+const verifyToken = (req, res) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+        return {
+            error: res
+                .status(401)
+                .json({
+                    success: false,
+                    message: "Unauthorized: No token provided",
+                }),
+        };
+    }
 
+    try {
+        const token = authHeader.split(" ")[1];
+        return { decoded: jwt.verify(token, secret) };
+    } catch (error) {
+        return {
+            error: res
+                .status(401)
+                .json({
+                    success: false,
+                    message: "Unauthorized: Invalid token",
+                }),
+        };
+    }
+};
 exports.createStudentModule = async (req, res) => {
     try {
+        verifyToken(req, res);
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             return res
@@ -40,7 +68,7 @@ exports.createStudentModule = async (req, res) => {
     }
 }
 
-exports.getAllStudentModulesByStudent = async (req, res) => {
+exports.getAllStudentModulesByStudentForRegister = async (req, res) => {
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -157,7 +185,6 @@ exports.getAllStudentModulesByStudent = async (req, res) => {
     }
 };
 
-
 exports.getAllStudentModulesApplied= async (req, res) => {
     try {
         const authHeader = req.headers.authorization;
@@ -258,3 +285,39 @@ exports.deleteStudentModuleByAdmin = async (req, res) => {
         return res.status(400).json({ success: false, error: error.message });
     }
 };
+
+exports.getAllStudentModulesByStudent = async (req, res) => {
+    try {
+        verifyToken(req);
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res
+                .status(401)
+                .json({ success: false, message: "Unauthorized" });
+        }
+        const token = authHeader.split(" ")[1];
+        const decodedToken = jwt.verify(token, secret);
+        const studentId = decodedToken.id;
+        const studentmodule = await Student_modules.query()
+            .where("user_id", studentId)
+            .whereIn("isGraduated", ["completed", "studying"])
+            .join("modules", "student_modules.module_id", "modules.id")
+            .join("courses", "student_modules.course_id", "courses.id")
+            .select(
+                "student_modules.id",
+                "student_modules.module_id",
+                "student_modules.course_id",
+                "student_modules.user_id",
+                "student_modules.isGraduated",
+                "modules.id as module_id",
+                "modules.name as module_name",
+                "courses.id as course_id",
+                "courses.name as course_name", 
+            )
+            .join("users", "student_modules.user_id", "users.id");
+        return res.json({ success: true, modules: studentmodule });
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ success: false, msg: error.message });
+    }
+}

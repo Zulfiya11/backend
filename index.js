@@ -15,12 +15,13 @@ const questionRouter = require('./router/questions')
 const groupRouter = require('./router/groups')
 const groupStudentRouter = require('./router/groupStudents')
 const groupLessonRouter = require('./router/groupLessons')
-const lessonReportByUserRouter = require('./router/lessonReportByUser')
+const groupLessonReportRouter = require('./router/groupLessonReport')
 const groupAttendanceRouter = require('./router/groupAttendance')
 const questionLevelRouter = require('./router/questionLevels')
 const assignmentLevelRouter = require('./router/assignmentLevels')
 const studentModulesRouter = require('./router/studentModules')
-const examRouter = require('./router/exams')
+const groupStudentAssignmentsRouter = require("./router/groupStudentAssignments");
+const groupStudentAssignmentQuestionsRouter = require('./router/groupStudentAssignmentQuestions')
 
 const cors = require('cors')
 
@@ -30,45 +31,29 @@ app.use(cors())
 app.use(bodyParser.json())
 
 
-app.use('/users', userRouter),
+app.use("/users", userRouter),
+    app.use("/courses", courseRouter),
+    app.use("/modules", moduleRouter),
+    app.use("/studentmodules", studentModulesRouter),
+    app.use("/assignmenttypes", assignmentTypeRouter),
+    app.use("/subjects", subjectRouter),
+    app.use("/lessons", lessonRouter),
+    app.use("/lessonreporttypes", lessonReportTypeRouter),
+    app.use("/rooms", roomRouter),
+    app.use("/lessonunits", lessonUnitRouter),
+    app.use("/assignments", assignmentRouter),
+    app.use("/questions", questionRouter),
+    app.use("/groups", groupRouter),
+    app.use("/groupstudents", groupStudentRouter),
+    app.use("/grouplessons", groupLessonRouter),
+    app.use("/grouplessonreports", groupLessonReportRouter),
+    app.use("/groupattendance", groupAttendanceRouter),
+    app.use("/questionlevels", questionLevelRouter),
+    app.use("/assignmentlevels", assignmentLevelRouter),
+    app.use("/groupstudentassignmentquestions", groupStudentAssignmentQuestionsRouter),
+    app.use("/groupstudentassignments", groupStudentAssignmentsRouter);
 
-app.use('/courses', courseRouter),
 
-app.use('/modules', moduleRouter),
-
-app.use('/studentmodules', studentModulesRouter),
-
-app.use('/assignmenttypes', assignmentTypeRouter),
-
-app.use('/subjects', subjectRouter),
-
-app.use('/lessons', lessonRouter),
-
-app.use('/lessonreporttypes', lessonReportTypeRouter),
-
-app.use('/rooms', roomRouter),
-
-app.use('/lessonunits', lessonUnitRouter),
-
-app.use('/assignments', assignmentRouter), 
-
-app.use('/questions', questionRouter),
-
-app.use('/groups', groupRouter),
-
-app.use('/groupstudents', groupStudentRouter),
-
-app.use('/grouplessons', groupLessonRouter),
-
-app.use('/lessonreportsbyuser', lessonReportByUserRouter),
-
-app.use('/groupattendance', groupAttendanceRouter),
-
-app.use('/questionlevels', questionLevelRouter),
-
-app.use('/assignmentlevels', assignmentLevelRouter),
-
-app.use('/exams', examRouter)
 
 app.listen(3000, () => {
     console.log('server is running');

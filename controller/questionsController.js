@@ -27,45 +27,30 @@ exports.createQuestion = [
     verifyToken,
     async (req, res) => {
         try {
-            const {
-                question,
-                level_id,
-                unit_id,
-                true: correct,
-                second,
-                third,
-                fourth,
-            } = req.body;
 
+            const question = await Questions.query().findOne({
+                question: req.body.question
+            })
+
+            if (question) {
+                return res
+                    .status(400)
+                    .json({ success: false, msg: "Question already exists" });
+            }
             const newQuestion = await Questions.query().insert({
-                question,
-                level_id,
-                unit_id,
+                question: req.body.question,
+                level_id: req.body.level_id,    
+                unit_id: req.body.unit_id,
                 status: "active",
             });
 
-            await Options.query().insertGraph([
-                {
-                    option: correct,
-                    isRight: "right",
+            for (let i = 0; i < req.body.options.length; i++) {
+                await Options.query().insert({
                     question_id: newQuestion.id,
-                },
-                {
-                    option: second,
-                    isRight: "wrong",
-                    question_id: newQuestion.id,
-                },
-                {
-                    option: third,
-                    isRight: "wrong",
-                    question_id: newQuestion.id,
-                },
-                {
-                    option: fourth,
-                    isRight: "wrong",
-                    question_id: newQuestion.id,
-                },
-            ]);
+                    option: req.body.options[i].option,
+                    isRight: req.body.options[i].isRight,
+                });
+            }
 
             res.status(201).json({
                 success: true,
@@ -82,13 +67,9 @@ exports.getAllQuestions = [
     verifyToken,
     async (req, res) => {
         try {
-            const { id } = req.params;
-            const { level_id } = req.body;
-
-            const questions = await Questions.query().where({
-                unit_id: id,
-                level_id,
-            });
+            const questions = await Questions.query()
+                .where("unit_id", req.params.id)
+                .andWhere("level_id", req.body.level_id);
 
             const result = await Promise.all(
                 questions.map(async (q) => {

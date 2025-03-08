@@ -18,6 +18,7 @@ const verifyToken = (req) => {
 exports.getAllGroupLessons = async(req,res) => {
     try {
         verifyToken(req);
+
         const group_lessons = await Group_lessons.query().where('group_id', req.params.id)
             .join('lessons', 'group_lessons.lesson_id', 'lessons.id')
             .join("rooms", "group_lessons.room_id", "rooms.id")
@@ -25,6 +26,7 @@ exports.getAllGroupLessons = async(req,res) => {
                 'lessons.name AS lesson_name',
                 'rooms.name AS room_name',
                 'group_lessons.*',)
+        
         return res.json({ success: true, group_lessons: group_lessons });
     } catch (error) {
         console.log(error);
@@ -36,8 +38,10 @@ exports.getAllGroupLessons = async(req,res) => {
  
 exports.editGroupLesson = async(req, res) => {
     try {
+        verifyToken(req);
         await Group_lessons.query().where('id', req.params.id).update({
-           lesson_date: req.body.lesson_date
+            lesson_date: req.body.lesson_date,
+            room_id: req.body.room_id
         })
     
         return res.status(201).json({ success: true, msg: 'Group Lesson tahrirlandi' })

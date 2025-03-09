@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const groupStudentAssignmentQuestionsController = require("../controller/groupStudentAssignmentQuestionsController");
 
+
+
 router.post(
     "/create/:id",
     groupStudentAssignmentQuestionsController.createGroupStudentAssignmentQuestions
@@ -14,15 +16,16 @@ router.get(
 router.post("/answers/:id", groupStudentAssignmentQuestionsController.answers);
 
 
-
-
-
-
-
-router.post(
-    "/allbystudentbymodulecompleted/:id",
-    groupStudentAssignmentQuestionsController.getAllExamsByStudentByModuleOnlyCompleted
+router.get(
+    "/answers/all/:id",
+    groupStudentAssignmentQuestionsController.getAllGroupStudentAssignmentQuestionsByGroupStudentAssignment
 );
+
+
+
+
+
+
 
 router.post(
     "/allforgroup/:id",
@@ -31,10 +34,6 @@ router.post(
 
 
 
-router.get(
-    "/getanswers/:id",
-    groupStudentAssignmentQuestionsController.getAnswers
-);
 // router.get('/all', daysController.getaAllDays)
 // router.get('/all', daysController.getaAllDays)
 

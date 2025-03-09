@@ -78,7 +78,8 @@ exports.createGroup = [
                 await Student_modules.query()
                     .where("id", student.enrolement_id)
                     .update({
-                    isGraduated: "studying",
+                        isGraduated: "studying",
+                        group_id: newGroup.id,
                 });
             }
 

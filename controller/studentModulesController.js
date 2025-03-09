@@ -304,6 +304,7 @@ exports.getAllStudentModulesByStudent = async (req, res) => {
             .join("modules", "student_modules.module_id", "modules.id")
             .join("courses", "student_modules.course_id", "courses.id")
             .select(
+                "student_modules.group_id",
                 "student_modules.id",
                 "student_modules.module_id",
                 "student_modules.course_id",

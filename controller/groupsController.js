@@ -1,6 +1,6 @@
 const Groups = require("../models/groups");
 const Group_student = require("../models/group_student");
-const Group_lessons = require("../models/group_lessons");
+const Bills = require("../models/bills");
 const Modules = require("../models/modules");
 const Courses = require("../models/courses");
 const Users = require("../models/users");
@@ -8,6 +8,8 @@ const Student_modules = require("../models/student_modules");
 const Rooms = require("../models/rooms");
 const jwt = require("jsonwebtoken");
 const { secret } = require("../config/config");
+const { group } = require("console");
+const { stat } = require("fs");
 
 // Middleware to verify token
 const verifyToken = (req, res, next) => {
@@ -70,11 +72,21 @@ exports.createGroup = [
                 .update({ name: groupname });
 
             for (const student of req.body.students) {
-                await Group_student.query().insert({
+                const group_student = await Group_student.query().insert({
                     group_id: newGroup.id,
                     user_id: student.user_id,
                 });
-
+                for (let i = 0; i < req.body.bills.length; i++) {
+                    await Bills.query().insert({
+                        user_id: student.user_id,
+                        group_student_id: group_student.id,
+                        module_id: req.body.module_id,
+                        group_id: newGroup.id,
+                        amount: req.body.bills[i].amount,
+                        deadline: req.body.bills[i].deadline,
+                        status: "pending",
+                    });
+                }
                 await Student_modules.query()
                     .where("id", student.enrolement_id)
                     .update({

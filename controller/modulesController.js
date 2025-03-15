@@ -46,7 +46,6 @@ exports.createModule = async (req, res) => {
 
 exports.getAllModules = async (req, res) => {
     try {
-        verifyToken(req);
 
         const modules = await Modules.query()
             .where("modules.course_id", req.params.id)

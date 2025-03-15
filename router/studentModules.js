@@ -16,3 +16,4 @@ router.delete("/delete/:id", studentModulesController.deleteStudentModuleByAdmin
 router.get("/all/bystudent", studentModulesController.getAllStudentModulesByStudent);
 
 module.exports = router;
+  

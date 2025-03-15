@@ -325,3 +325,28 @@ exports.forgotPassword = async (req, res) => {
         return res.status(500).json({ success: false, error: error.message });
     }
 };
+
+exports.getTheNumberOfUsers = async (req, res) => {
+    try {
+        const users = await Users.query().select("*")
+        let numberofstudents = 0
+        let numberofstaff = 0
+
+        for (let i = 0; i < users.length; i++) {
+            if (users[i].role === "student") {
+                numberofstudents++
+            } else if (users[i].role != "guest") {
+                numberofstaff++
+            }
+        }
+        const final = {
+            staff: numberofstaff,
+            users: users.length,
+            students: numberofstudents
+        }
+        return res.status(200).json({success: true, data: final})
+    } catch(error) {
+        console.error(error);
+        return res.status(500).json({ success: false, error: error.message });
+    }
+}

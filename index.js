@@ -22,6 +22,10 @@ const assignmentLevelRouter = require('./router/assignmentLevels')
 const studentModulesRouter = require('./router/studentModules')
 const groupStudentAssignmentsRouter = require("./router/groupStudentAssignments");
 const groupStudentAssignmentQuestionsRouter = require('./router/groupStudentAssignmentQuestions')
+const leadsRouter = require("./router/leads");
+const billsRouter = require("./router/bills");
+
+
 
 const cors = require('cors')
 
@@ -31,7 +35,7 @@ app.use(cors())
 app.use(bodyParser.json())
 
 
-app.use("/users", userRouter),
+    app.use("/users", userRouter),
     app.use("/courses", courseRouter),
     app.use("/modules", moduleRouter),
     app.use("/studentmodules", studentModulesRouter),
@@ -52,6 +56,8 @@ app.use("/users", userRouter),
     app.use("/assignmentlevels", assignmentLevelRouter),
     app.use("/groupstudentassignmentquestions", groupStudentAssignmentQuestionsRouter),
     app.use("/groupstudentassignments", groupStudentAssignmentsRouter);
+    app.use("/leads", leadsRouter);
+    app.use("/bills", billsRouter);
 
 
 

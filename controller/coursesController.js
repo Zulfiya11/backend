@@ -42,10 +42,11 @@ exports.createCourse = async (req, res) => {
 
 exports.getAllCourses = async (req, res) => {
     try {
-        verifyToken(req);
-
+        if (req.body.where === "una") {
+            
+        }
         const courses = await Courses.query().select("*");
-        return res.json({ success: true, courses });
+        return res.status(200).json({ success: true, courses });
     } catch (error) {
         return res.status(400).json({ success: false, error: error.message });
     }

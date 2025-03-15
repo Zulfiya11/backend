@@ -18,6 +18,8 @@ router.post('/forgotpassword',usersController.forgotPassword)
 
 router.get("/me", usersController.me);
 
+router.get("/number", usersController.getTheNumberOfUsers)
+
 
 
 

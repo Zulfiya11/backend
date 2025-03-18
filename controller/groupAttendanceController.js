@@ -191,5 +191,24 @@ exports.editGroupAttendance = async (req, res) => {
     }
 };
 
+exports.getAllGroupAttendanceByGroupStudent = async (req, res) => {
+    try {
+        verifyToken(req);
+        
+        const token = req.headers.authorization.split(" ")[1];
+        const decodedToken = jwt.decode(token);
+        const userId = decodedToken.id;
+        const group_attendance = await Group_attendance.query()
+            .where("user_id", userId)
+            .where("group_id", req.params.id)
+            .join("lessons", "group_attendance.lesson_id", "lessons.id")
+            .select("group_attendance.*", "lessons.name AS lesson_name");
+        return res.status(200).json({ success: true, data: group_attendance });
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ success: false, error: error.message });
+    }
+};
+
 
 

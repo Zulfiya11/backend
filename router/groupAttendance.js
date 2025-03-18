@@ -11,6 +11,8 @@ router.get('/all/bylesson/:id', groupAttendanceController.getAllGroupAttendanceB
 
 router.post('/edit', groupAttendanceController.editGroupAttendance)
 
+router.get("/all/bygroupstudent/:id", groupAttendanceController.getAllGroupAttendanceByGroupStudent);
+
 
 
 module.exports = router

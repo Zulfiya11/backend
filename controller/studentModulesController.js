@@ -290,11 +290,6 @@ exports.getAllStudentModulesByStudent = async (req, res) => {
     try {
         verifyToken(req);
         const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return res
-                .status(401)
-                .json({ success: false, message: "Unauthorized" });
-        }
         const token = authHeader.split(" ")[1];
         const decodedToken = jwt.verify(token, secret);
         const studentId = decodedToken.id;
@@ -303,6 +298,7 @@ exports.getAllStudentModulesByStudent = async (req, res) => {
             .whereIn("isGraduated", ["completed", "studying"])
             .join("modules", "student_modules.module_id", "modules.id")
             .join("courses", "student_modules.course_id", "courses.id")
+            .join("groups", "student_modules.group_id", "groups.id")
             .select(
                 "student_modules.group_id",
                 "student_modules.id",
@@ -313,7 +309,9 @@ exports.getAllStudentModulesByStudent = async (req, res) => {
                 "modules.id as module_id",
                 "modules.name as module_name",
                 "courses.id as course_id",
-                "courses.name as course_name", 
+                "courses.name as course_name",
+                "groups.id as group_id",
+                "groups.name as group_name"
             )
             .join("users", "student_modules.user_id", "users.id");
         return res.json({ success: true, modules: studentmodule });

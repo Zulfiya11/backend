@@ -148,40 +148,32 @@ exports.editGroupLessonReport = async (req, res) => {
     }
 };
 
-exports.getAllGroupLessonReportsByModuleByType = async (req, res) => {
+exports.getAllGroupLessonReportsByGroupStudent = async (req, res) => {
     try {
-        const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return res.status(401).json({
-                success: false,
-                message: "Unauthorized: Missing or invalid token",
-            });
-        }
+        verifyToken(req);
 
-        // Extract and verify the token
-        const token = authHeader.split(" ")[1];
+        const token = req.headers.authorization.split(" ")[1];
         const decodedToken = jwt.verify(token, secret);
         const studentId = decodedToken.id;
-
-        
-        // Perform the join to fetch lesson reports and related lesson_report_type name
-        const lesson_report_by_user = await Lesson_report_by_user.query()
+       
+        const group_lesson_reports = await Group_lesson_report.query()
+            .where("group_lesson_report.user_id", studentId)
+            .andWhere("group_lesson_report.group_id", req.params.id)
+            .andWhere("group_lesson_report.lesson_report_type_id", req.body.lesson_report_type_id)
             .join(
                 "lesson_report_types",
-                "lesson_report_by_user.lesson_report_type_id",
-                "=",
+                "group_lesson_report.lesson_report_type_id",
                 "lesson_report_types.id"
             )
-            .join("lessons", "lesson_report_by_user.lesson_id", "lessons.id")
-            .where("lesson_report_by_user.user_id", studentId)
-            .andWhere("lesson_report_by_user.module_id", req.params.id)
+            .join("lessons", "group_lesson_report.lesson_id", "lessons.id")
         .select(
-            "lesson_report_by_user.score",
+            "group_lesson_report.*",
             "lesson_report_types.name as lesson_report_type_name",
             "lessons.name as lesson_name"
         );
         
-        return res.status(200).json({ success: true, data: lesson_report_by_user });
+        console.log("user_id:", studentId, "group_id:", req.params.id, "lesson_report_type_id:", req.body.lesson_report_type_id);
+        return res.status(200).json({ success: true, group_lesson_reports: group_lesson_reports });
     } catch (error) {
         console.log(error);
         return res.status(400).json({ success: false, error: error.message });

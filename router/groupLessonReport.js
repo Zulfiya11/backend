@@ -11,8 +11,8 @@ router.post("/all/bylesson/:id", groupLessonReportController.getAllGroupLessonRe
 
 router.post('/edit', groupLessonReportController.editGroupLessonReport)
 
-router.get("/allbyuserbymodule/:id", groupLessonReportController.getAllGroupLessonReportsByModuleByType);
-
+router.post("/all/bygroupstudent/:id", groupLessonReportController.getAllGroupLessonReportsByGroupStudent);
+    
 
 module.exports = router
 

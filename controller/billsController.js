@@ -55,7 +55,7 @@ exports.payBill = async (req, res) => {
 };
 
 
-exports.getAllBillsByStudentByModule = async (req, res) => {
+exports.getAllBillsByGroupStudent = async (req, res) => {
     try {
         verifyToken(req);
 
@@ -80,5 +80,32 @@ exports.getAllBillsByStudentByModule = async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 };
+
+
+exports.getAllBillsByStudent = async (req, res) => {
+    try {
+        verifyToken(req)
+
+        const token = req.headers.authorization.split(" ")[1];
+        const decodedToken = jwt.verify(token, secret);
+        const studentId = decodedToken.id;
+       
+        const bills = await Bills.query()
+            .where("user_id", studentId)
+            .join("modules", "bills.module_id", "modules.id")
+            .join("groups", "bills.group_id", "groups.id")
+            .select(
+                "bills.*",
+                "modules.name as module_name",
+                "groups.name as group_name"
+        )
+        
+        return res.status(200).json({ success: true, bills: bills })
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({success: false, error: error.message})
+    }
+}
 
 

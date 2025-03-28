@@ -7,7 +7,9 @@ router.get('/all', billsController.getAllBills)
 
 router.post('/pay/:id', billsController.payBill)
 
-router.get('/all/bymodule/bystudent/:id', billsController.getAllBillsByStudentByModule)
+router.get('/all/bygroupstudent/:id', billsController.getAllBillsByGroupStudent)
+
+router.get('/all/bystudent', billsController.getAllBillsByStudent)
 
 
 
